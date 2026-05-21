@@ -3,49 +3,48 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TERRAOS — UMOJA Robotics · Investor Deck</title>
+<title>TerraOS — Autonomy stack for any robot · UMOJA Robotics</title>
+<meta name="description" content="TerraOS est une stack d'autonomie robotique modulaire et hardware-agnostique. Apportez votre hardware. Nous livrons l'autonomie." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0a;
-    --bg-elev: #111114;
-    --bg-card: #131318;
-    --border: rgba(255, 255, 255, 0.08);
+    --bg: #0a0a0f;
+    --bg-elev: #101018;
+    --bg-card: #121220;
+    --bg-card-hover: #16162a;
+    --border: rgba(255, 255, 255, 0.07);
     --border-strong: rgba(255, 255, 255, 0.14);
-    --text: #ededed;
-    --text-soft: rgba(237, 237, 237, 0.72);
-    --text-muted: rgba(237, 237, 237, 0.42);
-    --green: #00ff9d;
-    --green-dim: rgba(0, 255, 157, 0.65);
-    --green-glow: rgba(0, 255, 157, 0.12);
-    --violet: #a78bfa;
-    --violet-dim: rgba(167, 139, 250, 0.65);
-    --violet-glow: rgba(167, 139, 250, 0.12);
-    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+    --border-accent: rgba(0, 255, 136, 0.3);
+    --text: #f0f0f0;
+    --text-soft: rgba(240, 240, 240, 0.72);
+    --text-muted: rgba(240, 240, 240, 0.45);
+    --green: #00ff88;
+    --green-dim: rgba(0, 255, 136, 0.6);
+    --green-glow: rgba(0, 255, 136, 0.15);
+    --red: #ff4d4d;
+    --amber: #ffb84d;
+    --mono: 'Space Mono', ui-monospace, monospace;
     --sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --serif: 'Instrument Serif', Georgia, serif;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  html, body {
+  html { scroll-behavior: smooth; }
+
+  body {
     background: var(--bg);
     color: var(--text);
     font-family: var(--sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    line-height: 1.5;
   }
 
-  body {
-    scroll-snap-type: y mandatory;
-    overflow-y: scroll;
-    height: 100vh;
-    scroll-behavior: smooth;
-  }
-
-  /* Subtle grain overlay across the whole deck */
+  /* grain overlay */
   body::before {
     content: '';
     position: fixed;
@@ -56,915 +55,260 @@
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  /* ---------- TOP CHROME (persistent header) ---------- */
-  .chrome {
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ========== NAV ========== */
+  .nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     z-index: 50;
-    padding: 20px 40px;
+    padding: 18px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    pointer-events: none;
+    transition: all 0.4s ease;
+    background: rgba(10, 10, 15, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid transparent;
   }
-  .chrome .wordmark {
+  .nav.scrolled {
+    border-bottom-color: var(--border);
+    padding: 14px 40px;
+  }
+  .nav-logo {
     display: flex;
     align-items: center;
     gap: 10px;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.01em;
   }
-  .chrome .wordmark::before {
-    content: '';
-    width: 6px;
-    height: 6px;
+  .nav-logo .dot {
+    width: 8px; height: 8px;
     background: var(--green);
     border-radius: 50%;
     box-shadow: 0 0 12px var(--green);
     animation: pulse 2s ease-in-out infinite;
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-  .chrome .meta {
-    display: flex;
-    gap: 24px;
-  }
-
-  /* ---------- PAGINATION DOTS ---------- */
-  .pagination {
-    position: fixed;
-    right: 32px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 60;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  .pagination .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-  }
-  .pagination .dot:hover {
-    background: var(--text-soft);
-    transform: scale(1.2);
-  }
-  .pagination .dot.active {
-    background: var(--green);
-    box-shadow: 0 0 16px var(--green-dim);
-    transform: scale(1.3);
-  }
-  .pagination .dot .label {
-    position: absolute;
-    right: 22px;
-    top: 50%;
-    transform: translateY(-50%);
+  .nav-logo .sub {
     font-family: var(--mono);
     font-size: 10px;
     color: var(--text-muted);
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    transition: opacity 0.3s ease;
+    border-left: 1px solid var(--border-strong);
+    padding-left: 10px;
+    margin-left: 4px;
   }
-  .pagination .dot:hover .label { opacity: 1; }
-
-  /* ---------- SLIDE SHELL ---------- */
-  .slide {
-    min-height: 100vh;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    padding: 100px 80px 80px;
-    position: relative;
+  .nav-links {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
+    gap: 32px;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--text-soft);
+  }
+  .nav-links a { transition: color 0.2s ease; }
+  .nav-links a:hover { color: var(--green); }
+  .nav-cta {
+    background: var(--green);
+    color: #000;
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-family: var(--sans);
+    font-size: 13px;
+    border: none;
+    transition: all 0.3s ease;
+    letter-spacing: 0;
+  }
+  .nav-cta:hover {
+    background: #fff;
+    box-shadow: 0 0 24px var(--green-dim);
   }
 
-  .slide-num {
-    position: absolute;
-    top: 100px;
-    left: 80px;
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ========== UTILITIES ========== */
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+  .section {
+    padding: 120px 0;
+    position: relative;
+  }
+  .section-num {
     font-family: var(--mono);
     font-size: 11px;
     color: var(--text-muted);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-  .slide-num span:first-child {
-    color: var(--green);
-  }
-
-  .eyebrow {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--green);
     letter-spacing: 0.2em;
     text-transform: uppercase;
     margin-bottom: 24px;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
   }
-  .eyebrow::before {
+  .section-num::before {
     content: '';
-    width: 24px;
+    width: 32px;
     height: 1px;
     background: var(--green);
   }
+  .section-num span:first-child { color: var(--green); }
 
-  h1.headline {
-    font-size: clamp(38px, 5.4vw, 78px);
+  h2.section-title {
+    font-size: clamp(36px, 4.5vw, 60px);
     font-weight: 700;
-    line-height: 1.02;
     letter-spacing: -0.025em;
-    margin-bottom: 24px;
-  }
-  h2.headline {
-    font-size: clamp(34px, 4.6vw, 64px);
-    font-weight: 700;
     line-height: 1.05;
-    letter-spacing: -0.022em;
-    margin-bottom: 28px;
-    max-width: 1100px;
+    margin-bottom: 24px;
+    max-width: 900px;
   }
-  h2.headline em {
-    font-style: normal;
+  h2.section-title em {
+    font-style: italic;
+    font-family: var(--serif);
+    font-weight: 400;
     color: var(--green);
-    font-weight: 700;
   }
-  h2.headline em.violet { color: var(--violet); }
-
-  .lede {
-    font-size: 19px;
+  .section-lede {
+    font-size: 18px;
     line-height: 1.55;
     color: var(--text-soft);
-    max-width: 720px;
-    font-weight: 400;
+    max-width: 680px;
+    margin-bottom: 64px;
   }
 
-  /* =====================================================
-     SLIDE 1 — TITLE
-     ===================================================== */
-  .slide-title {
-    justify-content: center;
-    align-items: flex-start;
+  /* ========== HERO ========== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding-top: 100px;
+    overflow: hidden;
   }
-  .slide-title .grid-bg {
+  .hero-grid {
     position: absolute;
     inset: 0;
     background-image:
       linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 80%);
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 80%);
-    animation: gridDrift 40s linear infinite;
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 70% 60% at 30% 40%, black 20%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 30% 40%, black 20%, transparent 75%);
   }
-  @keyframes gridDrift {
-    0% { background-position: 0 0, 0 0; }
-    100% { background-position: 60px 60px, 60px 60px; }
-  }
-  /* Floating particles */
-  .particle {
+  .hero-glow {
     position: absolute;
-    width: 2px;
-    height: 2px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0,255,136,0.08), transparent 70%);
+    top: 10%;
+    right: -10%;
+    filter: blur(40px);
+    pointer-events: none;
+  }
+  .hero-glow.b {
+    top: auto;
+    bottom: 10%;
+    right: auto;
+    left: -10%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(0,255,136,0.05), transparent 70%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px;
+    border: 1px solid var(--border-accent);
+    border-radius: 100px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    background: rgba(0,255,136,0.05);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.1s forwards;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
     background: var(--green);
     border-radius: 50%;
     box-shadow: 0 0 8px var(--green);
+  }
+  .hero h1 {
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    margin-bottom: 28px;
     opacity: 0;
-    animation: floatParticle 14s linear infinite;
+    animation: fadeUp 1s ease 0.2s forwards;
   }
-  .particle.violet { background: var(--violet); box-shadow: 0 0 8px var(--violet); }
-  @keyframes floatParticle {
-    0% { opacity: 0; transform: translate(0, 100vh) scale(0); }
-    10% { opacity: 0.8; transform: translate(0, 90vh) scale(1); }
-    90% { opacity: 0.8; }
-    100% { opacity: 0; transform: translate(20px, -10vh) scale(0.5); }
-  }
-
-  /* Animated horizon line / scanner */
-  .scanline {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--green-dim), transparent);
-    opacity: 0.4;
-    animation: scan 8s ease-in-out infinite;
-  }
-  @keyframes scan {
-    0%, 100% { top: 35%; opacity: 0.2; }
-    50% { top: 65%; opacity: 0.5; }
-  }
-
-  .title-content {
-    position: relative;
-    z-index: 2;
-    max-width: 1100px;
-  }
-  .title-tag {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text-muted);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-bottom: 32px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.2s forwards;
-  }
-  .title-tag .bar {
-    width: 40px;
-    height: 1px;
-    background: var(--green);
-  }
-  .wordmark-big {
-    font-size: clamp(72px, 14vw, 200px);
-    font-weight: 800;
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    margin-bottom: 16px;
-    opacity: 0;
-    animation: fadeUp 1s ease 0.4s forwards;
-    background: linear-gradient(180deg, #ffffff 0%, #888888 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .hero h1 .accent {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--green);
+    display: inline-block;
     position: relative;
   }
-  .wordmark-big::after {
-    content: '';
-    position: absolute;
-    right: -28px;
-    top: 18%;
-    width: 12px;
-    height: 12px;
-    background: var(--green);
-    border-radius: 50%;
-    box-shadow: 0 0 24px var(--green);
-    animation: pulse 2s ease-in-out infinite;
-  }
-  .by-line {
-    font-family: var(--mono);
-    font-size: 14px;
+  .hero p.lead {
+    font-size: 19px;
+    line-height: 1.6;
     color: var(--text-soft);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-bottom: 64px;
+    max-width: 540px;
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+  .hero p.lead strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
     opacity: 0;
     animation: fadeUp 0.8s ease 0.6s forwards;
   }
-  .by-line .accent { color: var(--green); }
-  .tagline {
-    font-size: clamp(22px, 2.4vw, 32px);
-    font-weight: 400;
-    line-height: 1.3;
-    color: var(--text);
-    max-width: 720px;
-    margin-bottom: 48px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.8s forwards;
-  }
-  .tagline strong {
-    color: var(--green);
-    font-weight: 600;
-  }
-  .title-meta {
-    display: flex;
-    gap: 64px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 1s forwards;
-  }
-  .title-meta .item {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-  .title-meta .item strong {
-    display: block;
-    color: var(--text);
-    font-size: 13px;
-    margin-top: 6px;
-    font-weight: 500;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* =====================================================
-     SLIDE 2 — PROBLEM
-     ===================================================== */
-  .problem-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 64px;
-  }
-  .problem-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    padding: 40px 32px;
-    border-radius: 4px;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-  }
-  .problem-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, var(--green), transparent);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
-  .problem-card:hover {
-    border-color: var(--border-strong);
-    transform: translateY(-4px);
-  }
-  .problem-card:hover::before { opacity: 1; }
-  .problem-card .icon {
-    width: 44px;
-    height: 44px;
-    margin-bottom: 32px;
-    color: var(--green);
-  }
-  .problem-card .num {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.2em;
-    margin-bottom: 16px;
-    display: block;
-  }
-  .problem-card h3 {
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 1.25;
-    margin-bottom: 16px;
-    letter-spacing: -0.01em;
-  }
-  .problem-card p {
-    color: var(--text-soft);
-    font-size: 15px;
-    line-height: 1.55;
-  }
-
-  /* =====================================================
-     SLIDE 3 — SOLUTION (Diagram)
-     ===================================================== */
-  .solution-diagram {
-    margin-top: 56px;
-    display: grid;
-    grid-template-columns: 1.2fr 0.4fr 1fr 0.4fr 1fr;
-    align-items: center;
-    gap: 8px;
-    max-width: 1200px;
-  }
-  .hw-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .hw-box {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    padding: 18px 20px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    transition: all 0.4s ease;
-  }
-  .hw-box:hover {
-    border-color: var(--violet-dim);
-    background: rgba(167,139,250,0.04);
-  }
-  .hw-box .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--violet);
-    flex-shrink: 0;
-    box-shadow: 0 0 10px var(--violet-dim);
-  }
-  .hw-box .label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-  .hw-box .name {
-    font-size: 15px;
-    font-weight: 500;
-  }
-
-  .arrow {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    position: relative;
-  }
-  .arrow .line {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--green-dim), transparent);
-    position: relative;
-    overflow: hidden;
-  }
-  .arrow .line::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -30%;
-    width: 30%;
-    height: 3px;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green);
-    animation: dataFlow 2.5s ease-in-out infinite;
-  }
-  @keyframes dataFlow {
-    0% { left: -30%; opacity: 0; }
-    20% { opacity: 1; }
-    80% { opacity: 1; }
-    100% { left: 100%; opacity: 0; }
-  }
-  .arrow .label {
-    font-family: var(--mono);
-    font-size: 9px;
-    color: var(--text-muted);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-
-  .terraos-core {
-    background: linear-gradient(135deg, rgba(0,255,157,0.08), rgba(167,139,250,0.05));
-    border: 1px solid var(--green-dim);
-    padding: 36px 24px;
-    border-radius: 6px;
-    text-align: center;
-    position: relative;
-    box-shadow: 0 0 40px rgba(0,255,157,0.08);
-  }
-  .terraos-core::before, .terraos-core::after {
-    content: '';
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border: 1px solid var(--green);
-  }
-  .terraos-core::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
-  .terraos-core::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
-  .terraos-core .core-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--green);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-  .terraos-core .core-name {
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 8px;
-  }
-  .terraos-core .core-desc {
-    font-size: 12px;
-    color: var(--text-soft);
-    line-height: 1.4;
-  }
-
-  .output-box {
-    background: var(--bg-card);
-    border: 1px solid var(--green);
-    padding: 28px 24px;
-    border-radius: 4px;
-    text-align: center;
-    box-shadow: 0 0 30px rgba(0,255,157,0.1);
-  }
-  .output-box .label {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--green);
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-  .output-box .name {
-    font-size: 24px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    margin-bottom: 4px;
-  }
-  .output-box .sub {
-    font-size: 13px;
-    color: var(--text-soft);
-  }
-
-  /* =====================================================
-     SLIDE 4 — CAPABILITIES (Bento)
-     ===================================================== */
-  .capabilities {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    grid-auto-rows: minmax(180px, auto);
-    gap: 16px;
-    margin-top: 48px;
-  }
-  .cap-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 28px;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  .cap-card.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .cap-card:hover {
-    border-color: var(--border-strong);
-    background: #16161c;
-  }
-  .cap-card .cap-icon {
-    width: 36px;
-    height: 36px;
-    color: var(--green);
-    margin-bottom: 20px;
-  }
-  .cap-card.violet .cap-icon { color: var(--violet); }
-  .cap-card .cap-num {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 0.2em;
-    position: absolute;
-    top: 24px;
-    right: 24px;
-  }
-  .cap-card h3 {
-    font-size: 19px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
-  }
-  .cap-card p {
-    color: var(--text-soft);
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  /* Grid sizing */
-  .cap-card.lg { grid-column: span 3; grid-row: span 1; }
-  .cap-card.md { grid-column: span 3; grid-row: span 1; }
-  .cap-card.sm { grid-column: span 2; grid-row: span 1; }
-  .cap-card.wide { grid-column: span 6; grid-row: span 1; min-height: 140px; }
-
-  /* Highlight card with subtle gradient */
-  .cap-card.hero {
-    background: linear-gradient(135deg, rgba(0,255,157,0.06), rgba(0,255,157,0));
-    border-color: rgba(0,255,157,0.2);
-  }
-
-  /* =====================================================
-     SLIDE 5 — MARKET
-     ===================================================== */
-  .market-layout {
-    display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: 64px;
-    align-items: center;
-    margin-top: 48px;
-  }
-  .market-segments {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
-  .segment {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    padding: 22px 24px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-  }
-  .segment:hover {
-    border-color: var(--green-dim);
-    transform: translateX(4px);
-  }
-  .segment .seg-num {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--green);
-    letter-spacing: 0.2em;
-    margin-bottom: 8px;
-  }
-  .segment h4 {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    letter-spacing: -0.01em;
-  }
-  .segment p {
-    font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.4;
-  }
-
-  .market-stat {
-    text-align: left;
-    padding-left: 32px;
-    border-left: 1px solid var(--border);
-  }
-  .market-stat .stat-label {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--green);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-  .market-stat .stat-value {
-    font-size: clamp(56px, 7vw, 110px);
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.04em;
-    margin-bottom: 16px;
-    background: linear-gradient(180deg, var(--green) 0%, rgba(0,255,157,0.4) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .market-stat .stat-desc {
-    color: var(--text-soft);
-    font-size: 14px;
-    line-height: 1.5;
-    max-width: 320px;
-  }
-  .market-stat .stat-source {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 0.15em;
-    margin-top: 16px;
-  }
-
-  /* =====================================================
-     SLIDE 6 — BUSINESS MODEL
-     ===================================================== */
-  .business-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 56px;
-  }
-  .biz-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 40px 32px;
-    position: relative;
-    transition: all 0.4s ease;
-  }
-  .biz-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--border-strong);
-  }
-  .biz-card .biz-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--green);
-    letter-spacing: 0.2em;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .biz-card .biz-num::before {
-    content: '';
-    width: 24px;
-    height: 1px;
-    background: var(--green);
-  }
-  .biz-card.violet .biz-num { color: var(--violet); }
-  .biz-card.violet .biz-num::before { background: var(--violet); }
-  .biz-card h3 {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 16px;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
-  }
-  .biz-card p {
-    color: var(--text-soft);
-    font-size: 14px;
-    line-height: 1.55;
-  }
-
-  /* =====================================================
-     SLIDE 7 — TRACTION
-     ===================================================== */
-  .traction-layout {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 64px;
-    margin-top: 48px;
-    align-items: start;
-  }
-  .traction-list {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .traction-item {
-    display: grid;
-    grid-template-columns: 40px 1fr auto;
-    gap: 20px;
-    align-items: center;
-    padding: 20px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .traction-item:last-child { border-bottom: none; }
-  .check-circle {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(0,255,157,0.1);
-    border: 1px solid var(--green);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .check-circle svg {
-    width: 14px;
-    height: 14px;
-    color: var(--green);
-  }
-  .traction-item .content h4 {
-    font-size: 17px;
-    font-weight: 500;
-    margin-bottom: 4px;
-    letter-spacing: -0.005em;
-  }
-  .traction-item .content p {
-    font-size: 13px;
-    color: var(--text-muted);
-  }
-  .traction-item .status {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--green);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border: 1px solid var(--green-dim);
-    border-radius: 2px;
-    background: rgba(0,255,157,0.05);
-  }
-
-  /* Mock terminal panel */
-  .ops-panel {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    font-family: var(--mono);
-    font-size: 12px;
-  }
-  .ops-header {
-    padding: 12px 18px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255,255,255,0.02);
-  }
-  .ops-header .lights { display: flex; gap: 6px; }
-  .ops-header .lights span {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.15);
-  }
-  .ops-header .lights span:first-child { background: var(--green); box-shadow: 0 0 8px var(--green); }
-  .ops-header .title {
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-  .ops-body { padding: 20px; }
-  .ops-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-  .ops-row:last-child { border-bottom: none; }
-  .ops-row .k { color: var(--text-muted); }
-  .ops-row .v { color: var(--text); }
-  .ops-row .v.green { color: var(--green); }
-  .ops-row .v.violet { color: var(--violet); }
-  .ops-blink {
-    display: inline-block;
-    width: 8px;
-    height: 12px;
-    background: var(--green);
-    margin-left: 4px;
-    animation: blink 1s steps(2) infinite;
-    vertical-align: middle;
-  }
-  @keyframes blink {
-    50% { opacity: 0; }
-  }
-
-  /* =====================================================
-     SLIDE 8 — VISION
-     ===================================================== */
-  .slide-vision {
-    justify-content: center;
-    align-items: flex-start;
-    position: relative;
-  }
-  .vision-statement {
-    font-size: clamp(40px, 5.8vw, 86px);
-    font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-    max-width: 1200px;
-    margin-bottom: 56px;
-  }
-  .vision-statement .accent {
-    color: var(--green);
-    position: relative;
-    display: inline-block;
-  }
-  .vision-statement .accent::after {
-    content: '_';
-    color: var(--green);
-    animation: blink 1s steps(2) infinite;
-    margin-left: 4px;
-  }
-  .vision-cta {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    margin-bottom: 64px;
-  }
   .btn {
-    padding: 16px 32px;
+    padding: 14px 24px;
     border-radius: 4px;
     font-family: var(--sans);
     font-size: 14px;
     font-weight: 500;
-    letter-spacing: 0.02em;
-    cursor: pointer;
     transition: all 0.3s ease;
-    text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 10px;
     border: 1px solid transparent;
+    cursor: pointer;
   }
   .btn.primary {
     background: var(--green);
@@ -973,7 +317,7 @@
   }
   .btn.primary:hover {
     background: #fff;
-    box-shadow: 0 0 24px rgba(0,255,157,0.3);
+    box-shadow: 0 8px 24px rgba(0,255,136,0.2);
     transform: translateY(-2px);
   }
   .btn.secondary {
@@ -985,37 +329,83 @@
     border-color: var(--green);
     color: var(--green);
   }
-  .btn svg { width: 14px; height: 14px; }
+  .btn .arrow { transition: transform 0.3s ease; }
+  .btn:hover .arrow { transform: translateX(3px); }
 
-  .vision-footer {
-    position: absolute;
-    bottom: 60px;
-    left: 80px;
-    right: 80px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding-top: 32px;
-    border-top: 1px solid var(--border);
+  /* Hero visual — terminal-style status panel */
+  .hero-visual {
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+  .terminal {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 12px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,255,136,0.05);
+    transform: perspective(1000px) rotateY(-3deg) rotateX(2deg);
+  }
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal-lights { display: flex; gap: 6px; }
+  .terminal-lights span {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+  }
+  .terminal-lights span:first-child {
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+  .terminal-title {
+    font-size: 10px;
     color: var(--text-muted);
     letter-spacing: 0.15em;
     text-transform: uppercase;
+    margin-left: 8px;
   }
-  .vision-footer .col strong {
-    display: block;
-    color: var(--text);
-    margin-top: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
+  .terminal-body { padding: 20px; }
+  .term-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
   }
+  .term-row:last-child { border-bottom: none; }
+  .term-row .k { color: var(--text-muted); }
+  .term-row .v { color: var(--text); }
+  .term-row .v.green { color: var(--green); }
+  .term-row .v.amber { color: var(--amber); }
+  .term-row .pill {
+    padding: 2px 8px;
+    border-radius: 2px;
+    border: 1px solid var(--green-dim);
+    background: rgba(0,255,136,0.06);
+    font-size: 10px;
+  }
+  .term-cursor {
+    display: inline-block;
+    width: 7px; height: 11px;
+    background: var(--green);
+    animation: blink 1s steps(2) infinite;
+    vertical-align: middle;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
 
-  /* ---------- KEY HINT ---------- */
-  .key-hint {
-    position: fixed;
-    bottom: 24px;
+  /* Hero scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 32px;
     left: 50%;
     transform: translateX(-50%);
     font-family: var(--mono);
@@ -1023,448 +413,1172 @@
     color: var(--text-muted);
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    z-index: 50;
-    opacity: 0.5;
-    transition: opacity 0.4s ease;
-    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
   }
-  .key-hint kbd {
-    display: inline-block;
-    padding: 2px 6px;
-    border: 1px solid var(--border-strong);
-    border-radius: 3px;
-    margin: 0 2px;
-    font-size: 9px;
+  .scroll-indicator::after {
+    content: '';
+    width: 1px; height: 32px;
+    background: linear-gradient(180deg, var(--green), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+  @keyframes scrollLine {
+    0%, 100% { transform: scaleY(0.4); transform-origin: top; }
+    50% { transform: scaleY(1); }
   }
 
-  /* ---------- RESPONSIVE ---------- */
-  @media (max-width: 960px) {
-    .slide { padding: 90px 32px 60px; }
-    .slide-num { left: 32px; }
-    .chrome { padding: 16px 24px; }
-    .problem-grid, .business-grid { grid-template-columns: 1fr; }
-    .solution-diagram { grid-template-columns: 1fr; gap: 16px; }
-    .arrow .line { height: 24px; width: 1px; background: linear-gradient(180deg, transparent, var(--green-dim), transparent); }
-    .market-layout, .traction-layout { grid-template-columns: 1fr; gap: 32px; }
-    .capabilities { grid-template-columns: 1fr; }
-    .cap-card.lg, .cap-card.md, .cap-card.sm, .cap-card.wide { grid-column: span 1; }
-    .pagination { right: 16px; }
-    .vision-footer { position: relative; left: 0; right: 0; bottom: 0; margin-top: 48px; flex-direction: column; gap: 16px; align-items: flex-start; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ========== STATS ========== */
+  .stats {
+    padding: 80px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elev);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat {
+    padding: 0 32px;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+  .stat:last-child { border-right: none; }
+  .stat:first-child { padding-left: 0; }
+  .stat .number {
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 12px;
+    background: linear-gradient(180deg, var(--green) 0%, rgba(0,255,136,0.5) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .stat .label {
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.4;
+  }
+  .stat .meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  /* ========== VALUE PROP — "Bring your hardware" ========== */
+  .value-prop {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 56px;
+  }
+  .vp-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 36px 32px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .vp-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .vp-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-strong);
+    transform: translateY(-4px);
+  }
+  .vp-card:hover::before { opacity: 1; }
+  .vp-step {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.2em;
+    margin-bottom: 24px;
+  }
+  .vp-card h3 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+  .vp-card p {
+    color: var(--text-soft);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ========== FEATURES (bento grid) ========== */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: minmax(220px, auto);
+    gap: 16px;
+    margin-top: 56px;
+  }
+  .feature {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .feature:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+  }
+  .feature.lg { grid-column: span 4; }
+  .feature.md { grid-column: span 2; }
+  .feature.full { grid-column: span 6; }
+  .feature-icon {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    background: rgba(0,255,136,0.08);
+    border: 1px solid var(--border-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    color: var(--green);
+  }
+  .feature-icon svg { width: 20px; height: 20px; }
+  .feature-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    position: absolute;
+    top: 32px; right: 32px;
+  }
+  .feature h3 {
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+  .feature p {
+    color: var(--text-soft);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .feature-bullets {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .feature-bullets li {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .feature-bullets li::before {
+    content: '→';
+    color: var(--green);
+    font-family: var(--mono);
+  }
+
+  /* Highlighted hero feature card */
+  .feature.hero-card {
+    background: linear-gradient(135deg, rgba(0,255,136,0.06), rgba(0,255,136,0));
+    border-color: var(--border-accent);
+  }
+
+  /* ========== ARCHITECTURE ========== */
+  .arch-diagram {
+    margin-top: 56px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 48px;
+    font-family: var(--mono);
+    font-size: 13px;
+    position: relative;
+    overflow: hidden;
+  }
+  .arch-diagram::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+  }
+  .arch-layer {
+    display: grid;
+    grid-template-columns: 180px 1fr 200px;
+    gap: 24px;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.05);
+    transition: background 0.3s ease;
+  }
+  .arch-layer:last-child { border-bottom: none; }
+  .arch-layer:hover { background: rgba(0,255,136,0.02); }
+  .arch-num {
+    color: var(--green);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+  }
+  .arch-name {
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 700;
+    font-family: var(--sans);
+    letter-spacing: -0.01em;
+  }
+  .arch-name .sub {
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .arch-tags {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .arch-tag {
+    padding: 3px 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    font-size: 10px;
+    color: var(--text-soft);
+    letter-spacing: 0.05em;
+  }
+  .arch-tag.accent {
+    color: var(--green);
+    border-color: var(--green-dim);
+    background: rgba(0,255,136,0.04);
+  }
+  .arch-divider {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 16px;
+    padding: 4px 0;
+  }
+
+  /* ========== USE CASES ========== */
+  .usecases {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 56px;
+  }
+  .uc-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 32px 28px;
+    transition: all 0.4s ease;
+    position: relative;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .uc-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--green-dim);
+    transform: translateY(-4px);
+  }
+  .uc-card svg { width: 28px; height: 28px; color: var(--green); margin-bottom: 24px; }
+  .uc-card h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .uc-card p {
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.5;
+  }
+  .uc-card .uc-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    margin-top: 20px;
+  }
+
+  /* ========== COMPARISON TABLE ========== */
+  .compare {
+    margin-top: 56px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .compare-header {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-header > div {
+    padding: 24px 28px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-right: 1px solid var(--border);
+  }
+  .compare-header > div:last-child { border-right: none; }
+  .compare-header .terra { color: var(--green); }
+  .compare-header .terra::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+    box-shadow: 0 0 8px var(--green);
+  }
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s ease;
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row:hover { background: rgba(0,255,136,0.02); }
+  .compare-row > div {
+    padding: 22px 28px;
+    border-right: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .compare-row > div:last-child { border-right: none; }
+  .compare-row .label {
+    color: var(--text);
+    font-weight: 500;
+  }
+  .compare-row .without {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    text-decoration-color: rgba(255,77,77,0.4);
+    text-decoration-thickness: 1px;
+  }
+  .compare-row .with {
+    color: var(--text);
+    font-weight: 500;
+  }
+  .compare-row .with .badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    background: rgba(0,255,136,0.08);
+    border: 1px solid var(--green-dim);
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* ========== CONTACT / FINAL CTA ========== */
+  .contact-section {
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 80% at 50% 100%, rgba(0,255,136,0.08), transparent 70%);
+    pointer-events: none;
+  }
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    position: relative;
+  }
+  .contact-pitch h2 {
+    font-size: clamp(40px, 5vw, 68px);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+  }
+  .contact-pitch h2 em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--green);
+  }
+  .contact-pitch p {
+    font-size: 17px;
+    color: var(--text-soft);
+    line-height: 1.6;
+    margin-bottom: 40px;
+    max-width: 480px;
+  }
+  .contact-direct {
+    border-top: 1px solid var(--border);
+    padding-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .contact-line {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.3s ease;
+  }
+  .contact-line:hover { transform: translateX(4px); }
+  .contact-line .icon {
+    width: 36px; height: 36px;
+    background: rgba(0,255,136,0.06);
+    border: 1px solid var(--border-accent);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--green);
+    flex-shrink: 0;
+  }
+  .contact-line .icon svg { width: 16px; height: 16px; }
+  .contact-line .info { display: flex; flex-direction: column; }
+  .contact-line .info .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .contact-line .info .val {
+    font-size: 15px;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .contact-line .info .val:hover { color: var(--green); }
+
+  /* Contact form */
+  .contact-form {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 40px;
+    position: relative;
+  }
+  .contact-form::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 60%; height: 1px;
+    background: linear-gradient(90deg, var(--green), transparent);
+  }
+  .form-label {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .form-field { margin-bottom: 24px; }
+  .form-input, .form-textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-strong);
+    padding: 10px 0;
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+    resize: vertical;
+  }
+  .form-input:focus, .form-textarea:focus {
+    outline: none;
+    border-bottom-color: var(--green);
+  }
+  .form-textarea { min-height: 100px; }
+  .form-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--green);
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .form-submit:hover {
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0,255,136,0.2);
+    transform: translateY(-2px);
+  }
+  .form-note {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  /* ========== FOOTER ========== */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 48px 0 32px;
+  }
+  .footer-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .footer-brand {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+  .footer-brand .green { color: var(--green); }
+  .footer-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ========== SCROLL ANIMATIONS ========== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal.delay-1 { transition-delay: 0.1s; }
+  .reveal.delay-2 { transition-delay: 0.2s; }
+  .reveal.delay-3 { transition-delay: 0.3s; }
+  .reveal.delay-4 { transition-delay: 0.4s; }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 1024px) {
+    .hero-content { grid-template-columns: 1fr; gap: 56px; }
+    .terminal { transform: none; }
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .feature.lg, .feature.md, .feature.full { grid-column: span 2; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .stat { border-right: none; padding: 0; }
+    .usecases { grid-template-columns: repeat(2, 1fr); }
+    .contact-layout { grid-template-columns: 1fr; gap: 48px; }
+  }
+  @media (max-width: 768px) {
+    .nav { padding: 14px 20px; }
+    .nav-links a:not(.nav-cta) { display: none; }
+    .container, .hero-content { padding: 0 20px; }
+    .section { padding: 80px 0; }
+    .value-prop, .features-grid { grid-template-columns: 1fr; }
+    .feature.lg, .feature.md, .feature.full { grid-column: span 1; }
+    .usecases { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .arch-layer { grid-template-columns: 1fr; gap: 12px; text-align: left; }
+    .arch-tags { justify-content: flex-start; }
+    .compare-header, .compare-row { grid-template-columns: 1fr; }
+    .compare-header > div, .compare-row > div { border-right: none; border-bottom: 1px solid var(--border); }
+    .compare-row > div:last-child { border-bottom: none; }
+    .footer-grid { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .footer-tag { text-align: left; }
+    .footer-bottom { flex-direction: column; gap: 8px; }
+    .arch-diagram { padding: 28px 20px; }
+    .contact-form { padding: 28px 24px; }
   }
 </style>
 </head>
 <body>
 
-<!-- Persistent chrome -->
-<div class="chrome">
-  <div class="wordmark">TERRAOS / UMOJA ROBOTICS</div>
-  <div class="meta">
-    <span>v.0.1 — Investor Deck</span>
-    <span>2026</span>
+<!-- ===== NAV ===== -->
+<nav class="nav" id="nav">
+  <a href="#top" class="nav-logo">
+    <span class="dot"></span>
+    TerraOS
+    <span class="sub">by UMOJA Robotics</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Plateforme</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#usecases">Cas d'usage</a>
+    <a href="#why">Pourquoi TerraOS</a>
+    <a href="#contact" class="nav-cta">Démarrer un partenariat</a>
   </div>
-</div>
-
-<!-- Pagination -->
-<nav class="pagination">
-  <div class="dot active" data-target="1"><span class="label">01 · Intro</span></div>
-  <div class="dot" data-target="2"><span class="label">02 · Problème</span></div>
-  <div class="dot" data-target="3"><span class="label">03 · Solution</span></div>
-  <div class="dot" data-target="4"><span class="label">04 · Capacités</span></div>
-  <div class="dot" data-target="5"><span class="label">05 · Marché</span></div>
-  <div class="dot" data-target="6"><span class="label">06 · Business</span></div>
-  <div class="dot" data-target="7"><span class="label">07 · Traction</span></div>
-  <div class="dot" data-target="8"><span class="label">08 · Vision</span></div>
 </nav>
 
-<!-- =================== SLIDE 1 — TITLE =================== -->
-<section class="slide slide-title" id="slide-1">
-  <div class="grid-bg"></div>
-  <div class="scanline"></div>
-  <!-- particles -->
-  <div class="particle" style="left:8%; animation-delay: 0s;"></div>
-  <div class="particle violet" style="left:18%; animation-delay: 3s;"></div>
-  <div class="particle" style="left:32%; animation-delay: 6s;"></div>
-  <div class="particle" style="left:48%; animation-delay: 2s;"></div>
-  <div class="particle violet" style="left:62%; animation-delay: 5s;"></div>
-  <div class="particle" style="left:78%; animation-delay: 8s;"></div>
-  <div class="particle" style="left:92%; animation-delay: 1s;"></div>
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow b"></div>
 
-  <div class="title-content">
-    <div class="title-tag">
-      <span class="bar"></span>
-      <span>Autonomy stack · Hardware-agnostic</span>
+  <div class="hero-content">
+    <div>
+      <div class="hero-tag">● Autonomy stack · v1.0 · Production-ready</div>
+      <h1>
+        L'autonomie robotique.<br/>
+        <span class="accent">Plug &amp; Play.</span>
+      </h1>
+      <p class="lead">
+        TerraOS est la couche logicielle d'autonomie qui se branche sur <strong>n'importe quel robot existant</strong>. Un fichier d'adaptation, et vous gagnez 6 mois de développement. Gardez votre hardware. Nous livrons l'intelligence.
+      </p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn primary">
+          Démarrer un partenariat
+          <svg class="arrow" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="#features" class="btn secondary">
+          Voir la plateforme
+        </a>
+      </div>
     </div>
-    <div class="wordmark-big">TERRAOS</div>
-    <div class="by-line">by <span class="accent">UMOJA</span> ROBOTICS</div>
-    <div class="tagline">
-      <strong>Bring your hardware.</strong><br/>
-      We provide autonomy.
+
+    <div class="hero-visual">
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="terminal-lights"><span></span><span></span><span></span></div>
+          <div class="terminal-title">terraos · live console</div>
+        </div>
+        <div class="terminal-body">
+          <div class="term-row"><span class="k">// system</span><span class="v green">OPERATIONAL</span></div>
+          <div class="term-row"><span class="k">// hardware adapter</span><span class="v"><span class="pill">your_robot.yaml</span></span></div>
+          <div class="term-row"><span class="k">// agents linked</span><span class="v green">02 / 02</span></div>
+          <div class="term-row"><span class="k">// agent · ground</span><span class="v">UGV · waypoint 3/7</span></div>
+          <div class="term-row"><span class="k">// agent · air</span><span class="v">DRONE · scanning</span></div>
+          <div class="term-row"><span class="k">// localization</span><span class="v green">GPS + EKF fused</span></div>
+          <div class="term-row"><span class="k">// 3D map</span><span class="v">streaming · 12 hz</span></div>
+          <div class="term-row"><span class="k">// safety</span><span class="v green">all clear</span></div>
+          <div class="term-row"><span class="k">// uptime</span><span class="v">00:24:17 <span class="term-cursor"></span></span></div>
+        </div>
+      </div>
     </div>
-    <div class="title-meta">
-      <div class="item">Pitch deck<strong>Série Seed · Confidentiel</strong></div>
-      <div class="item">Statut<strong>Prototype validé en conditions réelles</strong></div>
-      <div class="item">Contact<strong>contact@umoja-robotics.com</strong></div>
+  </div>
+
+  <div class="scroll-indicator">SCROLL</div>
+</section>
+
+<!-- ===== STATS ===== -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat reveal">
+        <div class="meta">— 01 / Time-to-market</div>
+        <div class="number">6 mois</div>
+        <div class="label">de développement infrastructure économisés sur votre roadmap robotique</div>
+      </div>
+      <div class="stat reveal delay-1">
+        <div class="meta">— 02 / Intégration</div>
+        <div class="number">1 fichier</div>
+        <div class="label">d'adaptation hardware à implémenter — le pattern HAL fait le reste</div>
+      </div>
+      <div class="stat reveal delay-2">
+        <div class="meta">— 03 / Coordination</div>
+        <div class="number">2 agents</div>
+        <div class="label">orchestrés nativement : UGV au sol et drone aérien sur mission conjointe</div>
+      </div>
+      <div class="stat reveal delay-3">
+        <div class="meta">— 04 / Déploiement</div>
+        <div class="number">&lt; 5 min</div>
+        <div class="label">pour faire tourner la stack complète en simulation avant le terrain</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- =================== SLIDE 2 — PROBLEM =================== -->
-<section class="slide" id="slide-2">
-  <div class="slide-num"><span>02</span> / 08 &nbsp;·&nbsp; Le problème</div>
-  <div class="eyebrow">Pourquoi maintenant</div>
-  <h2 class="headline">Les robots se vendent. <em>L'intelligence pour les piloter, non.</em></h2>
-  <p class="lede">Les constructeurs maîtrisent l'ingénierie mécanique et énergétique. Mais la couche d'autonomie qui transforme un robot en outil productif reste un angle mort : absente, propriétaire ou impossible à porter d'un châssis à l'autre.</p>
+<!-- ===== VALUE PROP — Bring your hardware ===== -->
+<section class="section" id="value">
+  <div class="container">
+    <div class="section-num"><span>01</span> &nbsp;/&nbsp; La proposition</div>
+    <h2 class="section-title reveal">Bring your hardware.<br/><em>We provide autonomy.</em></h2>
+    <p class="section-lede reveal delay-1">
+      UMOJA Robotics ne fabrique pas de robots. Nous fournissons la couche logicielle qui transforme votre plateforme — quelle qu'elle soit — en système autonome opérationnel.
+    </p>
 
-  <div class="problem-grid">
-    <div class="problem-card">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M4 12h16M12 4v16"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
-      <span class="num">01 / Problème</span>
-      <h3>Du hardware sans cerveau</h3>
-      <p>Les robots sont livrés avec des capteurs et des moteurs, mais sans la couche logicielle qui transforme la mécanique en mission utile sur le terrain.</p>
-    </div>
-    <div class="problem-card">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/><path d="M3 9h2M3 15h2M19 9h2M19 15h2M9 3v2M15 3v2M9 19v2M15 19v2"/></svg>
-      <span class="num">02 / Problème</span>
-      <h3>Autonomie verrouillée</h3>
-      <p>Quand l'intelligence existe, elle est propriétaire, opaque, et liée à une marque. Impossible d'évoluer, d'intégrer ou d'étendre sans repartir de zéro.</p>
-    </div>
-    <div class="problem-card">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/><circle cx="12" cy="12" r="3"/></svg>
-      <span class="num">03 / Problème</span>
-      <h3>Zéro portabilité</h3>
-      <p>Changer de plateforme, ajouter un drone, mixer les fournisseurs : tout est à refaire. Le coût d'évolution explose, la flotte reste fragmentée.</p>
+    <div class="value-prop">
+      <div class="vp-card reveal">
+        <div class="vp-step">— Étape 01</div>
+        <h3>Vous gardez votre hardware</h3>
+        <p>Robot agricole, plateforme industrielle, châssis de défense, prototype custom : votre matériel reste votre matériel. Aucun lock-in fournisseur, aucune dépendance à un constructeur tiers.</p>
+      </div>
+      <div class="vp-card reveal delay-1">
+        <div class="vp-step">— Étape 02</div>
+        <h3>Vous écrivez un adapter</h3>
+        <p>Notre Hardware Abstraction Layer expose une interface claire : un seul fichier pour décrire vos capteurs, vos moteurs et votre cinématique. Le reste de la stack ne bouge pas.</p>
+      </div>
+      <div class="vp-card reveal delay-2">
+        <div class="vp-step">— Étape 03</div>
+        <h3>Vous obtenez l'autonomie</h3>
+        <p>Navigation GPS, perception 3D, coordination multi-agent, dashboard opérateur, safety monitor : tout fonctionne immédiatement sur votre robot, prêt pour le terrain.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- =================== SLIDE 3 — SOLUTION =================== -->
-<section class="slide" id="slide-3">
-  <div class="slide-num"><span>03</span> / 08 &nbsp;·&nbsp; Notre solution</div>
-  <div class="eyebrow">L'approche TerraOS</div>
-  <h2 class="headline">Une couche d'autonomie <em>universelle</em>, qui se pose sur n'importe quel hardware.</h2>
-  <p class="lede">TerraOS est le système intermédiaire que toute la chaîne attendait : un logiciel modulaire, portable, branché aux capteurs et actionneurs du robot, qui livre l'autonomie de mission de bout en bout.</p>
+<!-- ===== FEATURES ===== -->
+<section class="section" id="features" style="padding-top: 40px;">
+  <div class="container">
+    <div class="section-num"><span>02</span> &nbsp;/&nbsp; La plateforme</div>
+    <h2 class="section-title reveal">Une stack <em>complète,</em> pas une boîte à outils.</h2>
+    <p class="section-lede reveal delay-1">
+      Sept modules production-ready, conçus pour fonctionner ensemble. Vous n'assemblez pas des briques : vous activez un système.
+    </p>
 
-  <div class="solution-diagram">
-    <div class="hw-stack">
-      <div class="hw-box">
-        <div class="dot"></div>
+    <div class="features-grid">
+      <!-- HAL — hero card -->
+      <div class="feature lg hero-card reveal">
         <div>
-          <div class="label">Hardware partenaire</div>
-          <div class="name">UGV terrestre</div>
+          <div class="feature-tag">/ 01 — HAL</div>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16v4H4zM4 14h16v4H4z"/><circle cx="7" cy="8" r="1" fill="currentColor"/><circle cx="7" cy="16" r="1" fill="currentColor"/></svg>
+          </div>
+          <h3>Plug &amp; Play Hardware</h3>
+          <p>Le pattern Hardware Abstraction Layer isole la mécanique du reste de la stack. Un fichier d'adapter par robot — capteurs, actionneurs, cinématique — et toute l'autonomie devient disponible.</p>
         </div>
+        <ul class="feature-bullets">
+          <li>1 fichier adapter par plateforme</li>
+          <li>Aucun fork du core requis</li>
+          <li>Économie : ~6 mois de R&D</li>
+        </ul>
       </div>
-      <div class="hw-box">
-        <div class="dot"></div>
+
+      <!-- GPS Nav -->
+      <div class="feature md reveal delay-1">
         <div>
-          <div class="label">Hardware partenaire</div>
-          <div class="name">Drone aérien</div>
+          <div class="feature-tag">/ 02 — NAV</div>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
+          </div>
+          <h3>Navigation GPS autonome</h3>
+          <p>Fusion GPS + IMU + odométrie via double EKF. Missions multi-waypoints exécutées sans infrastructure externe.</p>
         </div>
       </div>
-      <div class="hw-box">
-        <div class="dot"></div>
+
+      <!-- Perception -->
+      <div class="feature md reveal delay-2">
         <div>
-          <div class="label">Hardware partenaire</div>
-          <div class="name">Plateforme custom</div>
+          <div class="feature-tag">/ 03 — PERCEPTION</div>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg>
+          </div>
+          <h3>Perception 3D temps réel</h3>
+          <p>Cartographie LiDAR + caméra RGBD. Détection d'obstacles, filtrage nuages de points, terrain non structuré.</p>
+        </div>
+      </div>
+
+      <!-- Multi-agent -->
+      <div class="feature md reveal">
+        <div>
+          <div class="feature-tag">/ 04 — MULTI-AGENT</div>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="6" r="2.5"/><path d="M8 6h8M8 18l8-10M6 8v8"/></svg>
+          </div>
+          <h3>Orchestration UGV + drone</h3>
+          <p>Bus d'événements partagé, modèle du monde commun. Le drone reconnaît, l'UGV exécute.</p>
+        </div>
+      </div>
+
+      <!-- Safety -->
+      <div class="feature md reveal delay-1">
+        <div>
+          <div class="feature-tag">/ 05 — SAFETY</div>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4v5c0 5-3.5 8.5-8 9-4.5-.5-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <h3>Safety Monitor 3 niveaux</h3>
+          <p>Notification, Warning, ESTOP. Arrêt d'urgence câblé en dur sur tous les chemins de commande.</p>
+        </div>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="feature md reveal delay-2">
+        <div>
+          <div class="feature-tag">/ 06 — DASHBOARD</div>
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M7 14h4M14 14h3"/></svg>
+          </div>
+          <h3>Interface opérateur web</h3>
+          <p>React embarqué + API FastAPI + WebSocket. Missions, carte temps réel, état flotte, depuis n'importe quel navigateur.</p>
+        </div>
+      </div>
+
+      <!-- Deployment -->
+      <div class="feature full reveal">
+        <div style="display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 280px;">
+            <div class="feature-tag" style="position: static; margin-bottom: 16px;">/ 07 — DEPLOIEMENT</div>
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+            </div>
+            <h3>Déploiement clés en main</h3>
+            <p>Image Docker prête à déployer. Simulation Gazebo complète avant terrain. CI/CD GitHub Actions intégré. Une commande, et la stack tourne.</p>
+          </div>
+          <ul class="feature-bullets" style="flex: 1; min-width: 240px; padding-top: 8px;">
+            <li>Docker image opérationnelle</li>
+            <li>Simulation Gazebo complète</li>
+            <li>CI/CD natif (build + dashboard)</li>
+            <li>Onboarding partenaire en jours, pas en mois</li>
+          </ul>
         </div>
       </div>
     </div>
-
-    <div class="arrow">
-      <div class="line"></div>
-      <div class="label">Capteurs · GPS</div>
-    </div>
-
-    <div class="terraos-core">
-      <div class="core-label">— Stack logicielle —</div>
-      <div class="core-name">TERRAOS</div>
-      <div class="core-desc">Perception · Décision · Planification · Coordination</div>
-    </div>
-
-    <div class="arrow">
-      <div class="line"></div>
-      <div class="label">Missions</div>
-    </div>
-
-    <div class="output-box">
-      <div class="label">Sortie</div>
-      <div class="name">Autonomie</div>
-      <div class="sub">opérationnelle</div>
-    </div>
   </div>
 </section>
 
-<!-- =================== SLIDE 4 — CAPABILITIES =================== -->
-<section class="slide" id="slide-4">
-  <div class="slide-num"><span>04</span> / 08 &nbsp;·&nbsp; Capacités clés</div>
-  <div class="eyebrow">Ce que TerraOS livre, dès maintenant</div>
-  <h2 class="headline">Cinq capacités, <em>une seule stack.</em></h2>
+<!-- ===== ARCHITECTURE ===== -->
+<section class="section" id="architecture" style="padding-top: 60px;">
+  <div class="container">
+    <div class="section-num"><span>03</span> &nbsp;/&nbsp; Architecture</div>
+    <h2 class="section-title reveal">Une architecture en couches, <em>de l'IHM au métal.</em></h2>
+    <p class="section-lede reveal delay-1">
+      Chaque couche a une responsabilité claire. Vous remplacez le hardware en bas — tout le reste continue de fonctionner.
+    </p>
 
-  <div class="capabilities">
-    <div class="cap-card hero lg" data-anim="0">
-      <span class="cap-num">/ 01</span>
-      <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><path d="M8 12l3 3 5-6" stroke="currentColor" stroke-width="2"/></svg>
-      <div>
-        <h3>Navigation autonome GPS</h3>
-        <p>Le robot suit une mission multi-waypoints sans intervention humaine. Le terrain, les obstacles et les replanifications sont gérés en temps réel.</p>
-      </div>
-    </div>
-
-    <div class="cap-card md violet" data-anim="1">
-      <span class="cap-num">/ 02</span>
-      <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="6" cy="6" r="2.5"/><path d="M8 6h8M8 18l8-10M6 8v8"/></svg>
-      <div>
-        <h3>Coordination multi-agents</h3>
-        <p>Des UGV au sol et des drones en l'air opèrent comme une seule flotte. Partage de cartes, répartition des zones, synchronisation des actions.</p>
-      </div>
-    </div>
-
-    <div class="cap-card sm" data-anim="2">
-      <span class="cap-num">/ 03</span>
-      <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg>
-      <div>
-        <h3>Cartographie 3D temps réel</h3>
-        <p>L'environnement se reconstruit pendant la mission.</p>
-      </div>
-    </div>
-
-    <div class="cap-card sm" data-anim="3">
-      <span class="cap-num">/ 04</span>
-      <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M3 9h18M7 14h4M14 14h3"/></svg>
-      <div>
-        <h3>Interface opérateur web</h3>
-        <p>Planifier, lancer, monitorer depuis un navigateur.</p>
-      </div>
-    </div>
-
-    <div class="cap-card sm violet" data-anim="4">
-      <span class="cap-num">/ 05</span>
-      <svg class="cap-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16v4H4zM4 14h16v4H4z"/><circle cx="7" cy="8" r="1" fill="currentColor"/><circle cx="7" cy="16" r="1" fill="currentColor"/></svg>
-      <div>
-        <h3>Abstraction hardware</h3>
-        <p>Le même logiciel, n'importe quel châssis.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- =================== SLIDE 5 — MARKET =================== -->
-<section class="slide" id="slide-5">
-  <div class="slide-num"><span>05</span> / 08 &nbsp;·&nbsp; Marché cible</div>
-  <div class="eyebrow">Là où TerraOS crée de la valeur</div>
-  <h2 class="headline">Un marché <em>en formation</em>, prêt à absorber une couche d'autonomie universelle.</h2>
-
-  <div class="market-layout">
-    <div class="market-segments">
-      <div class="segment">
-        <div class="seg-num">01 — VERTICALE</div>
-        <h4>Agriculture de précision</h4>
-        <p>Surveillance des cultures, traitement ciblé, cartographie des parcelles.</p>
-      </div>
-      <div class="segment">
-        <div class="seg-num">02 — VERTICALE</div>
-        <h4>Inspection industrielle</h4>
-        <p>Sites étendus, pipelines, infrastructures critiques en extérieur.</p>
-      </div>
-      <div class="segment">
-        <div class="seg-num">03 — VERTICALE</div>
-        <h4>Logistique outdoor</h4>
-        <p>Mouvement de charges entre points sur des grandes emprises.</p>
-      </div>
-      <div class="segment">
-        <div class="seg-num">04 — VERTICALE</div>
-        <h4>Défense civile</h4>
-        <p>Reconnaissance, surveillance de zone, missions multi-vecteurs.</p>
-      </div>
-    </div>
-
-    <div class="market-stat">
-      <div class="stat-label">Taille de marché — Autonomous Mobile Robots</div>
-      <div class="stat-value">~$30B</div>
-      <div class="stat-desc">Marché projeté des robots mobiles autonomes en 2030, en croissance forte sur l'ensemble des verticales adressées.</div>
-      <div class="stat-source">Source : estimations marché agrégées</div>
-    </div>
-  </div>
-</section>
-
-<!-- =================== SLIDE 6 — BUSINESS MODEL =================== -->
-<section class="slide" id="slide-6">
-  <div class="slide-num"><span>06</span> / 08 &nbsp;·&nbsp; Modèle business</div>
-  <div class="eyebrow">Comment TerraOS génère du revenu</div>
-  <h2 class="headline">Trois flux de revenus, <em>une même technologie.</em></h2>
-
-  <div class="business-grid">
-    <div class="biz-card">
-      <div class="biz-num">01 — Récurrent</div>
-      <h3>Licence logicielle B2B</h3>
-      <p>Souscription par robot ou par flotte. Modèle SaaS sur la couche d'autonomie, mises à jour incluses, monétisation alignée sur l'usage opérationnel des clients.</p>
-    </div>
-    <div class="biz-card violet">
-      <div class="biz-num">02 — Stratégique</div>
-      <h3>Intégration partenaires hardware</h3>
-      <p>Accords avec les constructeurs de robots. TerraOS devient la couche d'autonomie embarquée par défaut, le partenaire vend une plateforme complète et déjà intelligente.</p>
-    </div>
-    <div class="biz-card">
-      <div class="biz-num">03 — Service</div>
-      <h3>Support &amp; customisation</h3>
-      <p>Adaptation à des cas d'usage spécifiques, intégration de capteurs métiers, accompagnement au déploiement. Marge élevée sur les comptes stratégiques.</p>
-    </div>
-  </div>
-</section>
-
-<!-- =================== SLIDE 7 — TRACTION =================== -->
-<section class="slide" id="slide-7">
-  <div class="slide-num"><span>07</span> / 08 &nbsp;·&nbsp; Traction &amp; validation</div>
-  <div class="eyebrow">Ce qui tourne déjà</div>
-  <h2 class="headline">La stack est <em>déployée. Validée. Démontrable.</em></h2>
-
-  <div class="traction-layout">
-    <div class="traction-list">
-      <div class="traction-item">
-        <div class="check-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div>
-        <div class="content">
-          <h4>Stack déployée sur plateforme réelle</h4>
-          <p>Déploiement complet sur hardware physique, hors environnement de simulation.</p>
+    <div class="arch-diagram reveal delay-2">
+      <div class="arch-layer">
+        <div class="arch-num">LAYER 06</div>
+        <div class="arch-name">Interface opérateur<span class="sub">React Dashboard · WebSocket live · API FastAPI</span></div>
+        <div class="arch-tags">
+          <span class="arch-tag">UI</span>
+          <span class="arch-tag">REST</span>
+          <span class="arch-tag">WS</span>
         </div>
-        <div class="status">Live</div>
       </div>
-      <div class="traction-item">
-        <div class="check-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div>
-        <div class="content">
-          <h4>Coordination UGV + drone validée</h4>
-          <p>Un robot terrestre et un drone opèrent ensemble en autonomie, sur une mission commune.</p>
+      <div class="arch-divider">↑ ↓</div>
+      <div class="arch-layer">
+        <div class="arch-num">LAYER 05</div>
+        <div class="arch-name">Orchestration de missions<span class="sub">Mode Manager · Behaviour Trees · Safety Monitor</span></div>
+        <div class="arch-tags">
+          <span class="arch-tag accent">CORE</span>
+          <span class="arch-tag">BT</span>
         </div>
-        <div class="status">Validé</div>
       </div>
-      <div class="traction-item">
-        <div class="check-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div>
-        <div class="content">
-          <h4>Interface opérateur opérationnelle</h4>
-          <p>Planification et monitoring des missions disponibles depuis un navigateur web.</p>
+      <div class="arch-divider">↑ ↓</div>
+      <div class="arch-layer">
+        <div class="arch-num">LAYER 04</div>
+        <div class="arch-name">Navigation autonome<span class="sub">Nav2 · double EKF · planification waypoints</span></div>
+        <div class="arch-tags">
+          <span class="arch-tag">GPS</span>
+          <span class="arch-tag">IMU</span>
+          <span class="arch-tag">ODOM</span>
         </div>
-        <div class="status">En production</div>
       </div>
-      <div class="traction-item">
-        <div class="check-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div>
-        <div class="content">
-          <h4>Démo partenaires</h4>
-          <p>Plateforme de démonstration prête pour évaluation avec des constructeurs et intégrateurs.</p>
+      <div class="arch-divider">↑ ↓</div>
+      <div class="arch-layer">
+        <div class="arch-num">LAYER 03</div>
+        <div class="arch-name">Perception &amp; cartographie<span class="sub">RTAB-Map · LiDAR + RGBD · obstacle filtering</span></div>
+        <div class="arch-tags">
+          <span class="arch-tag">SLAM</span>
+          <span class="arch-tag">3D</span>
         </div>
-        <div class="status">Disponible</div>
       </div>
-    </div>
-
-    <div class="ops-panel">
-      <div class="ops-header">
-        <div class="lights"><span></span><span></span><span></span></div>
-        <div class="title">TERRAOS · Console opérateur</div>
+      <div class="arch-divider">↑ ↓</div>
+      <div class="arch-layer">
+        <div class="arch-num">LAYER 02</div>
+        <div class="arch-name">Hardware Abstraction Layer<span class="sub">Un fichier adapter — capteurs, actionneurs, cinématique</span></div>
+        <div class="arch-tags">
+          <span class="arch-tag accent">HAL</span>
+          <span class="arch-tag">PARTNER</span>
+        </div>
       </div>
-      <div class="ops-body">
-        <div class="ops-row"><span class="k">// statut système</span><span class="v green">OPERATIONAL</span></div>
-        <div class="ops-row"><span class="k">// mission active</span><span class="v">surveillance_zone_42</span></div>
-        <div class="ops-row"><span class="k">// agents connectés</span><span class="v">02 / 02</span></div>
-        <div class="ops-row"><span class="k">// agent · sol</span><span class="v violet">UGV-001 · waypoint 3/7</span></div>
-        <div class="ops-row"><span class="k">// agent · air</span><span class="v violet">DRONE-001 · scan en cours</span></div>
-        <div class="ops-row"><span class="k">// cartographie 3D</span><span class="v green">streaming · 12.4 m/s</span></div>
-        <div class="ops-row"><span class="k">// latence opérateur</span><span class="v">38 ms</span></div>
-        <div class="ops-row"><span class="k">// uptime mission</span><span class="v">00:24:17<span class="ops-blink"></span></span></div>
+      <div class="arch-divider">↑ ↓</div>
+      <div class="arch-layer">
+        <div class="arch-num">LAYER 01</div>
+        <div class="arch-name">Votre hardware<span class="sub">UGV, drone, plateforme custom — n'importe quel châssis</span></div>
+        <div class="arch-tags">
+          <span class="arch-tag">METAL</span>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- =================== SLIDE 8 — VISION =================== -->
-<section class="slide slide-vision" id="slide-8">
-  <div class="slide-num"><span>08</span> / 08 &nbsp;·&nbsp; Vision</div>
-  <div class="eyebrow">Là où nous allons</div>
-  <h1 class="vision-statement">
-    Le <span class="accent">système d'exploitation</span><br/>
-    de l'autonomie robotique.
-  </h1>
+<!-- ===== USE CASES ===== -->
+<section class="section" id="usecases" style="padding-top: 60px;">
+  <div class="container">
+    <div class="section-num"><span>04</span> &nbsp;/&nbsp; Cas d'usage</div>
+    <h2 class="section-title reveal">Quatre verticales, <em>une seule stack.</em></h2>
+    <p class="section-lede reveal delay-1">
+      TerraOS a été pensé pour les environnements outdoor non structurés. Là où les solutions indoor échouent.
+    </p>
 
-  <div class="vision-cta">
-    <a href="mailto:contact@umoja-robotics.com" class="btn primary">
-      Demander une démo
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-    </a>
-    <a href="mailto:contact@umoja-robotics.com" class="btn secondary">
-      Nous contacter
-    </a>
-  </div>
-
-  <div class="vision-footer">
-    <div class="col">UMOJA Robotics<strong>TERRAOS · Autonomy stack</strong></div>
-    <div class="col">Contact<strong>contact@umoja-robotics.com</strong></div>
-    <div class="col">Pitch deck v.0.1<strong>2026 · Confidentiel</strong></div>
+    <div class="usecases">
+      <div class="uc-card reveal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v8M12 22c-4 0-8-3-8-9 0-5 4-9 8-9s8 4 8 9c0 6-4 9-8 9z"/><path d="M8 14c2 2 6 2 8 0"/></svg>
+        <div>
+          <h4>Agriculture autonome</h4>
+          <p>Désherbage de précision, surveillance des cultures, cartographie des parcelles.</p>
+        </div>
+        <div class="uc-num">→ 01</div>
+      </div>
+      <div class="uc-card reveal delay-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="9" width="18" height="12" rx="1"/><path d="M3 9l4-6h10l4 6M8 13v4M16 13v4M12 13v4"/></svg>
+        <div>
+          <h4>Inspection industrielle</h4>
+          <p>Sites étendus, pipelines, infrastructures critiques. Robots opérant en autonomie longue durée.</p>
+        </div>
+        <div class="uc-num">→ 02</div>
+      </div>
+      <div class="uc-card reveal delay-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7l9-4 9 4v10l-9 4-9-4V7z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg>
+        <div>
+          <h4>Logistique outdoor</h4>
+          <p>Déplacement de charges sur grandes emprises. Ports, sites industriels, plateformes ouvertes.</p>
+        </div>
+        <div class="uc-num">→ 03</div>
+      </div>
+      <div class="uc-card reveal delay-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/><path d="M5.5 5.5l13 13M5.5 18.5l13-13"/></svg>
+        <div>
+          <h4>Cartographie &amp; surveillance</h4>
+          <p>Reconnaissance de zones, surveillance multi-vecteurs, missions UGV + drone coordonnées.</p>
+        </div>
+        <div class="uc-num">→ 04</div>
+      </div>
+    </div>
   </div>
 </section>
 
-<div class="key-hint">
-  <kbd>↑</kbd> <kbd>↓</kbd> Naviguer · <kbd>1</kbd>—<kbd>8</kbd> Aller à
-</div>
+<!-- ===== WHY TERRAOS — comparison ===== -->
+<section class="section" id="why" style="padding-top: 60px;">
+  <div class="container">
+    <div class="section-num"><span>05</span> &nbsp;/&nbsp; Pourquoi TerraOS</div>
+    <h2 class="section-title reveal">Ce qui change <em>dès la première semaine.</em></h2>
+    <p class="section-lede reveal delay-1">
+      Construire une stack d'autonomie en interne, c'est une équipe robotique pendant un an, du recrutement spécialisé et un risque produit majeur. TerraOS supprime ce détour.
+    </p>
+
+    <div class="compare reveal delay-2">
+      <div class="compare-header">
+        <div>Critère</div>
+        <div>Sans TerraOS</div>
+        <div class="terra">Avec TerraOS</div>
+      </div>
+      <div class="compare-row">
+        <div class="label">Time-to-market autonomie</div>
+        <div class="without">12 — 18 mois de dev infrastructure</div>
+        <div class="with">2 semaines d'intégration <span class="badge">−95%</span></div>
+      </div>
+      <div class="compare-row">
+        <div class="label">Coordination multi-agent</div>
+        <div class="without">Non couvert sans équipe dédiée</div>
+        <div class="with">Natif · UGV + drone synchronisés</div>
+      </div>
+      <div class="compare-row">
+        <div class="label">Dashboard opérateur</div>
+        <div class="without">Frontend custom à développer</div>
+        <div class="with">Interface React livrée &amp; opérationnelle</div>
+      </div>
+      <div class="compare-row">
+        <div class="label">Sûreté de fonctionnement</div>
+        <div class="without">Safety monitor à concevoir ex-nihilo</div>
+        <div class="with">3 niveaux · ESTOP câblé en dur</div>
+      </div>
+      <div class="compare-row">
+        <div class="label">Portabilité hardware</div>
+        <div class="without">Refonte complète à chaque châssis</div>
+        <div class="with">1 fichier adapter · le reste ne bouge pas</div>
+      </div>
+      <div class="compare-row">
+        <div class="label">Tests avant terrain</div>
+        <div class="without">Infrastructure de simulation à monter</div>
+        <div class="with">Simulation Gazebo prête · 1 commande</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="contact-layout">
+      <div class="contact-pitch reveal">
+        <div class="section-num"><span>06</span> &nbsp;/&nbsp; Contact</div>
+        <h2>Vous avez le hardware.<br/><em>Nous avons l'autonomie.</em></h2>
+        <p>
+          Constructeur de robots, intégrateur, startup hardware, laboratoire de recherche : si vous voulez gagner six mois sur votre roadmap autonomie, écrivons-nous. Une démo, une discussion technique, ou un POC sur votre plateforme — au choix.
+        </p>
+
+        <div class="contact-direct">
+          <a class="contact-line" href="mailto:kleinfy51@gmail.com">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+            </div>
+            <div class="info">
+              <span class="label">Email direct</span>
+              <span class="val">kleinfy51@gmail.com</span>
+            </div>
+          </a>
+          <a class="contact-line" href="tel:+33613489874">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.86 19.86 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div class="info">
+              <span class="label">Téléphone</span>
+              <span class="val">+33 6 13 48 98 74</span>
+            </div>
+          </a>
+          <div class="contact-line">
+            <div class="icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </div>
+            <div class="info">
+              <span class="label">Réactivité</span>
+              <span class="val">Réponse sous 48h ouvrées</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <form class="contact-form reveal delay-1" id="contactForm" onsubmit="handleContact(event)">
+        <div class="form-field">
+          <label class="form-label">— Nom</label>
+          <input class="form-input" name="name" type="text" required placeholder="Votre nom" />
+        </div>
+        <div class="form-field">
+          <label class="form-label">— Email professionnel</label>
+          <input class="form-input" name="email" type="email" required placeholder="vous@entreprise.com" />
+        </div>
+        <div class="form-field">
+          <label class="form-label">— Entreprise</label>
+          <input class="form-input" name="company" type="text" placeholder="Nom de votre structure" />
+        </div>
+        <div class="form-field">
+          <label class="form-label">— Décrivez votre projet</label>
+          <textarea class="form-textarea" name="message" required placeholder="Quel hardware, quel cas d'usage, quel calendrier ?"></textarea>
+        </div>
+        <button type="submit" class="form-submit">
+          Démarrer la discussion
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <div class="form-note">Vos informations restent confidentielles. Aucune base mailing.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Terra<span class="green">OS</span></div>
+        <div style="font-family: var(--mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 8px;">by UMOJA Robotics</div>
+      </div>
+      <div class="footer-tag">
+        Bring your hardware.<br/>
+        We provide autonomy.
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 UMOJA Robotics · All rights reserved</div>
+      <div>TerraOS · v1.0 · contact@umoja-robotics</div>
+    </div>
+  </div>
+</footer>
 
 <script>
-  // ---- Pagination dots + active state ----
-  const slides = document.querySelectorAll('.slide');
-  const dots = document.querySelectorAll('.pagination .dot');
-
-  dots.forEach(dot => {
-    dot.addEventListener('click', () => {
-      const target = parseInt(dot.dataset.target);
-      const slide = document.getElementById('slide-' + target);
-      if (slide) slide.scrollIntoView({ behavior: 'smooth' });
-    });
+  // ---- Sticky nav background on scroll ----
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
   });
 
-  // ---- IntersectionObserver: active dot + capability animations ----
+  // ---- Reveal-on-scroll ----
+  const reveals = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting && entry.intersectionRatio > 0.55) {
-        const id = entry.target.id; // "slide-X"
-        const idx = parseInt(id.split('-')[1]);
-        dots.forEach((d, i) => d.classList.toggle('active', i === idx - 1));
-
-        // trigger capability fade-in on slide 4
-        if (idx === 4) {
-          const caps = document.querySelectorAll('#slide-4 .cap-card');
-          caps.forEach((c, i) => {
-            setTimeout(() => c.classList.add('visible'), 80 * i);
-          });
-        }
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
       }
     });
-  }, { threshold: [0.55] });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  reveals.forEach(el => observer.observe(el));
 
-  slides.forEach(s => observer.observe(s));
+  // ---- Contact form handler — opens user's mail client pre-filled ----
+  function handleContact(e) {
+    e.preventDefault();
+    const f = e.target;
+    const name = (f.name.value || '').trim();
+    const email = (f.email.value || '').trim();
+    const company = (f.company.value || '').trim();
+    const message = (f.message.value || '').trim();
 
-  // ---- Keyboard navigation ----
-  let currentSlide = 1;
-  document.addEventListener('keydown', (e) => {
-    const active = document.querySelector('.pagination .dot.active');
-    if (active) currentSlide = parseInt(active.dataset.target);
-
-    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
-      e.preventDefault();
-      const next = Math.min(currentSlide + 1, slides.length);
-      document.getElementById('slide-' + next)?.scrollIntoView({ behavior: 'smooth' });
-    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-      e.preventDefault();
-      const prev = Math.max(currentSlide - 1, 1);
-      document.getElementById('slide-' + prev)?.scrollIntoView({ behavior: 'smooth' });
-    } else if (/^[1-8]$/.test(e.key)) {
-      document.getElementById('slide-' + e.key)?.scrollIntoView({ behavior: 'smooth' });
-    }
-  });
-
-  // ---- Hide keyboard hint after scroll/interaction ----
-  const hint = document.querySelector('.key-hint');
-  let hintTimeout;
-  const fadeHint = () => {
-    hint.style.opacity = '0';
-    clearTimeout(hintTimeout);
-    hintTimeout = setTimeout(() => { hint.style.opacity = '0.5'; }, 3000);
-  };
-  document.addEventListener('scroll', fadeHint, { passive: true });
-  document.addEventListener('keydown', fadeHint);
+    const subject = encodeURIComponent(`[TerraOS] Demande de partenariat — ${company || name}`);
+    const body = encodeURIComponent(
+      `Bonjour,\n\nJe suis ${name}${company ? ` (${company})` : ''}.\n\n${message}\n\n— Contact : ${email}`
+    );
+    window.location.href = `mailto:kleinfy51@gmail.com?subject=${subject}&body=${body}`;
+  }
 </script>
 
 </body>
