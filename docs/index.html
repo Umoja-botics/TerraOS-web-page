@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TerraOS - Autonomy stack for any robot · UMOJA Robotics</title>
+<title>TerraOS — Autonomy stack for any robot · UMOJA Robotics</title>
 <meta name="description" content="TerraOS est une stack d'autonomie robotique modulaire et hardware-agnostique. Apportez votre hardware. Nous livrons l'autonomie." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -889,15 +889,13 @@
     border-color: var(--border-accent);
   }
 
-  /* ========== ARCHITECTURE ========== */
+  /* ========== ARCHITECTURE (Isometric stack) ========== */
   .arch-diagram {
     margin-top: 56px;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 48px;
-    font-family: var(--mono);
-    font-size: 13px;
     position: relative;
     overflow: hidden;
   }
@@ -909,63 +907,168 @@
     height: 1px;
     background: linear-gradient(90deg, transparent, var(--green), transparent);
   }
-  .arch-layer {
+  .arch-layout {
     display: grid;
-    grid-template-columns: 180px 1fr 200px;
-    gap: 24px;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 56px;
     align-items: center;
-    padding: 18px 0;
-    border-bottom: 1px dashed rgba(255,255,255,0.05);
-    transition: background 0.3s ease;
   }
-  .arch-layer:last-child { border-bottom: none; }
-  .arch-layer:hover { background: rgba(0,255,136,0.02); }
-  .arch-num {
-    color: var(--green);
-    font-size: 11px;
-    letter-spacing: 0.2em;
+
+  /* Isometric stack */
+  .arch-iso {
+    position: relative;
   }
-  .arch-name {
-    color: var(--text);
-    font-size: 17px;
-    font-weight: 700;
-    font-family: var(--sans);
-    letter-spacing: -0.01em;
-  }
-  .arch-name .sub {
+  .arch-iso svg {
     display: block;
+    width: 100%;
+    height: auto;
+    max-height: 560px;
+  }
+  .slab {
+    cursor: default;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+    transform-origin: center;
+  }
+  .slab .slab-front,
+  .slab .slab-top,
+  .slab .slab-right {
+    transition: fill 0.3s ease, stroke 0.3s ease;
+  }
+  .slab:hover,
+  .slab.active {
+    filter: drop-shadow(0 6px 18px rgba(0,255,136,0.18));
+  }
+  .slab:hover .slab-front,
+  .slab.active .slab-front {
+    fill: url(#slabFrontHover);
+  }
+  .slab:hover .slab-front-stroke,
+  .slab.active .slab-front-stroke {
+    stroke: var(--green);
+    stroke-opacity: 0.55;
+  }
+  /* HAL — always-on green accent */
+  .slab.hal .slab-front {
+    fill: url(#slabFrontHal);
+  }
+  .slab.hal .slab-front-stroke {
+    stroke: var(--green);
+    stroke-opacity: 0.5;
+  }
+  .slab.hal .slab-name {
+    fill: var(--green);
+  }
+  /* Hardware base — muted */
+  .slab.base .slab-front {
+    fill: url(#slabFrontBase);
+  }
+  .slab.base .slab-name {
+    fill: var(--text-muted);
+  }
+  /* Slab text */
+  .slab-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    fill: var(--text-muted);
+    letter-spacing: 0.18em;
+    pointer-events: none;
+  }
+  .slab-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--text);
+    letter-spacing: -0.005em;
+    pointer-events: none;
+  }
+  /* HAL pulse — subtle, breathing green outline */
+  .hal-pulse {
+    animation: archHalPulse 3s ease-in-out infinite;
+    transform-origin: center;
+  }
+  @keyframes archHalPulse {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.75; }
+  }
+
+  /* Legend (right column) */
+  .arch-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .arch-row {
+    padding: 14px 18px;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-left: 2px solid transparent;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+  .arch-row:hover,
+  .arch-row.active {
+    border-color: var(--border-strong);
+    border-left-color: var(--green);
+    background: rgba(0,255,136,0.025);
+    transform: translateX(2px);
+  }
+  .arch-row.hal {
+    border-left-color: var(--green);
+    background: rgba(0,255,136,0.035);
+  }
+  .arch-row.hal:hover,
+  .arch-row.hal.active {
+    background: rgba(0,255,136,0.06);
+  }
+  .arch-row-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .arch-row-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 0.18em;
+    flex-shrink: 0;
+  }
+  .arch-row.base .arch-row-num { color: var(--text-muted); }
+  .arch-row-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.005em;
+  }
+  .arch-row.hal .arch-row-name { color: var(--green); }
+  .arch-row-desc {
     font-family: var(--mono);
     font-size: 11px;
     color: var(--text-muted);
-    margin-top: 4px;
-    font-weight: 400;
-    letter-spacing: 0;
+    line-height: 1.5;
+    margin-bottom: 8px;
+    padding-left: 0;
   }
-  .arch-tags {
+  .arch-row-tags {
     display: flex;
-    gap: 6px;
-    justify-content: flex-end;
+    gap: 5px;
     flex-wrap: wrap;
   }
   .arch-tag {
-    padding: 3px 8px;
+    padding: 2px 7px;
     background: rgba(255,255,255,0.04);
     border: 1px solid var(--border);
     border-radius: 2px;
-    font-size: 10px;
+    font-family: var(--mono);
+    font-size: 9px;
     color: var(--text-soft);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
   }
   .arch-tag.accent {
     color: var(--green);
     border-color: var(--green-dim);
-    background: rgba(0,255,136,0.04);
-  }
-  .arch-divider {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 16px;
-    padding: 4px 0;
+    background: rgba(0,255,136,0.05);
   }
 
   /* ========== USE CASES ========== */
@@ -1304,6 +1407,8 @@
     .stat { border-right: none; padding: 0; }
     .usecases { grid-template-columns: repeat(2, 1fr); }
     .contact-layout { grid-template-columns: 1fr; gap: 48px; }
+    .arch-layout { grid-template-columns: 1fr; gap: 48px; }
+    .arch-iso { max-width: 460px; margin: 0 auto; }
   }
   @media (max-width: 640px) {
     .hud-main { grid-template-columns: 1fr; }
@@ -1322,8 +1427,8 @@
     .feature.lg, .feature.md, .feature.full { grid-column: span 1; }
     .usecases { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: 1fr; }
-    .arch-layer { grid-template-columns: 1fr; gap: 12px; text-align: left; }
-    .arch-tags { justify-content: flex-start; }
+    .arch-layout { grid-template-columns: 1fr; gap: 32px; }
+    .arch-iso { max-width: 400px; margin: 0 auto; }
     .compare-header, .compare-row { grid-template-columns: 1fr; }
     .compare-header > div, .compare-row > div { border-right: none; border-bottom: 1px solid var(--border); }
     .compare-row > div:last-child { border-bottom: none; }
@@ -1805,59 +1910,232 @@
     </p>
 
     <div class="arch-diagram reveal delay-2">
-      <div class="arch-layer">
-        <div class="arch-num">LAYER 06</div>
-        <div class="arch-name">Interface opérateur<span class="sub">React Dashboard · WebSocket live · API FastAPI</span></div>
-        <div class="arch-tags">
-          <span class="arch-tag">UI</span>
-          <span class="arch-tag">REST</span>
-          <span class="arch-tag">WS</span>
+      <div class="arch-layout">
+
+        <!-- ===== ISOMETRIC STACK (SVG) ===== -->
+        <div class="arch-iso">
+          <svg viewBox="0 0 540 560" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+            <defs>
+              <!-- Default slab front (dark) -->
+              <linearGradient id="slabFront" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1a1a26"/>
+                <stop offset="100%" stop-color="#101018"/>
+              </linearGradient>
+              <!-- Hover/active slab front -->
+              <linearGradient id="slabFrontHover" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#1f2a26"/>
+                <stop offset="100%" stop-color="#0e1612"/>
+              </linearGradient>
+              <!-- HAL slab front (green tint) -->
+              <linearGradient id="slabFrontHal" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(0,255,136,0.12)"/>
+                <stop offset="100%" stop-color="rgba(0,255,136,0.04)"/>
+              </linearGradient>
+              <!-- Hardware base slab (muted gray) -->
+              <linearGradient id="slabFrontBase" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#15151c"/>
+                <stop offset="100%" stop-color="#0a0a10"/>
+              </linearGradient>
+              <!-- Top face (lighter) -->
+              <linearGradient id="slabTop" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#22222e"/>
+                <stop offset="100%" stop-color="#1a1a24"/>
+              </linearGradient>
+              <linearGradient id="slabTopHal" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="rgba(0,255,136,0.18)"/>
+                <stop offset="100%" stop-color="rgba(0,255,136,0.08)"/>
+              </linearGradient>
+              <!-- Right face (darker) -->
+              <linearGradient id="slabRight" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#0c0c12"/>
+                <stop offset="100%" stop-color="#05050a"/>
+              </linearGradient>
+              <linearGradient id="slabRightHal" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="rgba(0,255,136,0.08)"/>
+                <stop offset="100%" stop-color="rgba(0,40,20,0.6)"/>
+              </linearGradient>
+              <!-- Ground shadow -->
+              <radialGradient id="groundShadow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(0,0,0,0.5)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+              </radialGradient>
+            </defs>
+
+            <!-- Ground shadow under the stack -->
+            <ellipse cx="280" cy="525" rx="220" ry="14" fill="url(#groundShadow)"/>
+
+            <!-- Subtle background grid (very faint) -->
+            <g opacity="0.4">
+              <line x1="0" y1="510" x2="540" y2="510" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
+              <line x1="0" y1="520" x2="540" y2="520" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+            </g>
+
+            <!-- ===== Slab 01 — Your hardware (BASE, widest, bottom) ===== -->
+            <g class="slab base" data-layer="01">
+              <!-- top face (partially visible behind slab 02) -->
+              <polygon points="80,450 460,450 478,432 98,432" fill="url(#slabTop)" opacity="0.6"/>
+              <!-- right face -->
+              <polygon points="460,450 478,432 478,482 460,500" fill="url(#slabRight)"/>
+              <!-- front face -->
+              <polygon points="80,450 460,450 460,500 80,500" fill="url(#slabFrontBase)" class="slab-front"/>
+              <polygon points="80,450 460,450 460,500 80,500" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" class="slab-front-stroke"/>
+              <!-- text -->
+              <text x="100" y="481" class="slab-num">L01</text>
+              <text x="140" y="481" class="slab-name">Votre hardware</text>
+            </g>
+
+            <!-- ===== Slab 02 — HAL (accent) ===== -->
+            <g class="slab hal" data-layer="02">
+              <polygon points="90,400 450,400 468,382 108,382" fill="url(#slabTopHal)"/>
+              <polygon points="450,400 468,382 468,432 450,450" fill="url(#slabRightHal)"/>
+              <polygon points="90,400 450,400 450,450 90,450" fill="url(#slabFrontHal)" class="slab-front"/>
+              <polygon points="90,400 450,400 450,450 90,450" fill="none" stroke="var(--green)" stroke-opacity="0.5" stroke-width="1" class="slab-front-stroke"/>
+              <!-- HAL pulse outline -->
+              <rect x="89" y="399" width="362" height="52" fill="none" stroke="var(--green)" stroke-width="1" class="hal-pulse"/>
+              <text x="110" y="431" class="slab-num">L02</text>
+              <text x="150" y="431" class="slab-name">Hardware Abstraction Layer</text>
+            </g>
+
+            <!-- ===== Slab 03 — Perception ===== -->
+            <g class="slab" data-layer="03">
+              <polygon points="100,350 440,350 458,332 118,332" fill="url(#slabTop)"/>
+              <polygon points="440,350 458,332 458,382 440,400" fill="url(#slabRight)"/>
+              <polygon points="100,350 440,350 440,400 100,400" fill="url(#slabFront)" class="slab-front"/>
+              <polygon points="100,350 440,350 440,400 100,400" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" class="slab-front-stroke"/>
+              <text x="120" y="381" class="slab-num">L03</text>
+              <text x="160" y="381" class="slab-name">Perception &amp; cartographie</text>
+            </g>
+
+            <!-- ===== Slab 04 — Navigation ===== -->
+            <g class="slab" data-layer="04">
+              <polygon points="110,300 430,300 448,282 128,282" fill="url(#slabTop)"/>
+              <polygon points="430,300 448,282 448,332 430,350" fill="url(#slabRight)"/>
+              <polygon points="110,300 430,300 430,350 110,350" fill="url(#slabFront)" class="slab-front"/>
+              <polygon points="110,300 430,300 430,350 110,350" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" class="slab-front-stroke"/>
+              <text x="130" y="331" class="slab-num">L04</text>
+              <text x="170" y="331" class="slab-name">Navigation autonome</text>
+            </g>
+
+            <!-- ===== Slab 05 — Orchestration ===== -->
+            <g class="slab" data-layer="05">
+              <polygon points="120,250 420,250 438,232 138,232" fill="url(#slabTop)"/>
+              <polygon points="420,250 438,232 438,282 420,300" fill="url(#slabRight)"/>
+              <polygon points="120,250 420,250 420,300 120,300" fill="url(#slabFront)" class="slab-front"/>
+              <polygon points="120,250 420,250 420,300 120,300" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" class="slab-front-stroke"/>
+              <text x="140" y="281" class="slab-num">L05</text>
+              <text x="180" y="281" class="slab-name">Orchestration de missions</text>
+            </g>
+
+            <!-- ===== Slab 06 — Operator interface (TOP) ===== -->
+            <g class="slab" data-layer="06">
+              <polygon points="130,200 410,200 428,182 148,182" fill="url(#slabTop)"/>
+              <polygon points="410,200 428,182 428,232 410,250" fill="url(#slabRight)"/>
+              <polygon points="130,200 410,200 410,250 130,250" fill="url(#slabFront)" class="slab-front"/>
+              <polygon points="130,200 410,200 410,250 130,250" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" class="slab-front-stroke"/>
+              <!-- subtle top-edge highlight to suggest "surface" -->
+              <line x1="148" y1="182" x2="428" y2="182" stroke="rgba(0,255,136,0.2)" stroke-width="0.6"/>
+              <text x="150" y="231" class="slab-num">L06</text>
+              <text x="190" y="231" class="slab-name">Interface opérateur</text>
+            </g>
+
+            <!-- Annotation: "operator surface" arrow above the top slab -->
+            <g opacity="0.55">
+              <line x1="430" y1="170" x2="470" y2="150" stroke="rgba(255,255,255,0.3)" stroke-width="0.6"/>
+              <circle cx="470" cy="150" r="2" fill="rgba(0,255,136,0.7)"/>
+              <text x="478" y="145" fill="rgba(255,255,255,0.5)" font-family="Space Mono" font-size="8" letter-spacing="0.1em">surface</text>
+              <text x="478" y="156" fill="rgba(255,255,255,0.5)" font-family="Space Mono" font-size="8" letter-spacing="0.1em">opérateur</text>
+            </g>
+
+            <!-- Annotation: "your hardware" label pointing to base -->
+            <g opacity="0.55">
+              <line x1="70" y1="490" x2="40" y2="510" stroke="rgba(255,255,255,0.3)" stroke-width="0.6"/>
+              <circle cx="40" cy="510" r="2" fill="rgba(255,255,255,0.6)"/>
+              <text x="14" y="525" fill="rgba(255,255,255,0.5)" font-family="Space Mono" font-size="8" letter-spacing="0.1em">votre socle</text>
+            </g>
+
+            <!-- Side label: "TerraOS" running vertically on the right -->
+            <g transform="translate(508 380) rotate(-90)" opacity="0.4">
+              <text x="0" y="0" fill="rgba(0,255,136,0.7)" font-family="Space Mono" font-size="9" letter-spacing="0.4em">TERRAOS</text>
+            </g>
+          </svg>
         </div>
-      </div>
-      <div class="arch-divider">↑ ↓</div>
-      <div class="arch-layer">
-        <div class="arch-num">LAYER 05</div>
-        <div class="arch-name">Orchestration de missions<span class="sub">Mode Manager · Behaviour Trees · Safety Monitor</span></div>
-        <div class="arch-tags">
-          <span class="arch-tag accent">CORE</span>
-          <span class="arch-tag">BT</span>
+
+        <!-- ===== LEGEND (right column) ===== -->
+        <div class="arch-legend">
+          <div class="arch-row" data-layer="06">
+            <div class="arch-row-head">
+              <span class="arch-row-num">L06</span>
+              <span class="arch-row-name">Interface opérateur</span>
+            </div>
+            <p class="arch-row-desc">React Dashboard · WebSocket live · API FastAPI</p>
+            <div class="arch-row-tags">
+              <span class="arch-tag">UI</span>
+              <span class="arch-tag">REST</span>
+              <span class="arch-tag">WS</span>
+            </div>
+          </div>
+
+          <div class="arch-row" data-layer="05">
+            <div class="arch-row-head">
+              <span class="arch-row-num">L05</span>
+              <span class="arch-row-name">Orchestration de missions</span>
+            </div>
+            <p class="arch-row-desc">Mode Manager · Behaviour Trees · Safety Monitor</p>
+            <div class="arch-row-tags">
+              <span class="arch-tag accent">CORE</span>
+              <span class="arch-tag">BT</span>
+            </div>
+          </div>
+
+          <div class="arch-row" data-layer="04">
+            <div class="arch-row-head">
+              <span class="arch-row-num">L04</span>
+              <span class="arch-row-name">Navigation autonome</span>
+            </div>
+            <p class="arch-row-desc">Nav2 · double EKF · planification waypoints</p>
+            <div class="arch-row-tags">
+              <span class="arch-tag">GPS</span>
+              <span class="arch-tag">IMU</span>
+              <span class="arch-tag">ODOM</span>
+            </div>
+          </div>
+
+          <div class="arch-row" data-layer="03">
+            <div class="arch-row-head">
+              <span class="arch-row-num">L03</span>
+              <span class="arch-row-name">Perception &amp; cartographie</span>
+            </div>
+            <p class="arch-row-desc">RTAB-Map · LiDAR + RGBD · obstacle filtering</p>
+            <div class="arch-row-tags">
+              <span class="arch-tag">SLAM</span>
+              <span class="arch-tag">3D</span>
+            </div>
+          </div>
+
+          <div class="arch-row hal" data-layer="02">
+            <div class="arch-row-head">
+              <span class="arch-row-num">L02</span>
+              <span class="arch-row-name">Hardware Abstraction Layer</span>
+            </div>
+            <p class="arch-row-desc">Un fichier adapter — capteurs, actionneurs, cinématique</p>
+            <div class="arch-row-tags">
+              <span class="arch-tag accent">HAL</span>
+              <span class="arch-tag">PARTNER</span>
+            </div>
+          </div>
+
+          <div class="arch-row base" data-layer="01">
+            <div class="arch-row-head">
+              <span class="arch-row-num">L01</span>
+              <span class="arch-row-name">Votre hardware</span>
+            </div>
+            <p class="arch-row-desc">UGV, drone, plateforme custom — n'importe quel châssis</p>
+            <div class="arch-row-tags">
+              <span class="arch-tag">METAL</span>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="arch-divider">↑ ↓</div>
-      <div class="arch-layer">
-        <div class="arch-num">LAYER 04</div>
-        <div class="arch-name">Navigation autonome<span class="sub">Nav2 · double EKF · planification waypoints</span></div>
-        <div class="arch-tags">
-          <span class="arch-tag">GPS</span>
-          <span class="arch-tag">IMU</span>
-          <span class="arch-tag">ODOM</span>
-        </div>
-      </div>
-      <div class="arch-divider">↑ ↓</div>
-      <div class="arch-layer">
-        <div class="arch-num">LAYER 03</div>
-        <div class="arch-name">Perception &amp; cartographie<span class="sub">RTAB-Map · LiDAR + RGBD · obstacle filtering</span></div>
-        <div class="arch-tags">
-          <span class="arch-tag">SLAM</span>
-          <span class="arch-tag">3D</span>
-        </div>
-      </div>
-      <div class="arch-divider">↑ ↓</div>
-      <div class="arch-layer">
-        <div class="arch-num">LAYER 02</div>
-        <div class="arch-name">Hardware Abstraction Layer<span class="sub">Un fichier adapter — capteurs, actionneurs, cinématique</span></div>
-        <div class="arch-tags">
-          <span class="arch-tag accent">HAL</span>
-          <span class="arch-tag">PARTNER</span>
-        </div>
-      </div>
-      <div class="arch-divider">↑ ↓</div>
-      <div class="arch-layer">
-        <div class="arch-num">LAYER 01</div>
-        <div class="arch-name">Votre hardware<span class="sub">UGV, drone, plateforme custom — n'importe quel châssis</span></div>
-        <div class="arch-tags">
-          <span class="arch-tag">METAL</span>
-        </div>
+
       </div>
     </div>
   </div>
@@ -2081,6 +2359,31 @@
     );
     window.location.href = `mailto:kleinfy51@gmail.com?subject=${subject}&body=${body}`;
   }
+
+  /* ===== Architecture: sync hover between iso stack & legend ===== */
+  (function() {
+    const slabs = document.querySelectorAll('.slab[data-layer]');
+    const rows = document.querySelectorAll('.arch-row[data-layer]');
+    if (!slabs.length || !rows.length) return;
+
+    function setActive(layer, active) {
+      slabs.forEach(s => {
+        if (s.dataset.layer === layer) s.classList.toggle('active', active);
+      });
+      rows.forEach(r => {
+        if (r.dataset.layer === layer) r.classList.toggle('active', active);
+      });
+    }
+
+    slabs.forEach(s => {
+      s.addEventListener('mouseenter', () => setActive(s.dataset.layer, true));
+      s.addEventListener('mouseleave', () => setActive(s.dataset.layer, false));
+    });
+    rows.forEach(r => {
+      r.addEventListener('mouseenter', () => setActive(r.dataset.layer, true));
+      r.addEventListener('mouseleave', () => setActive(r.dataset.layer, false));
+    });
+  })();
 </script>
 
 </body>
