@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TerraOS — Autonomy stack for any robot · UMOJA Robotics</title>
+<title>TerraOS - Autonomy stack for any robot · UMOJA Robotics</title>
 <meta name="description" content="TerraOS est une stack d'autonomie robotique modulaire et hardware-agnostique. Apportez votre hardware. Nous livrons l'autonomie." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -402,274 +402,304 @@
   }
   @keyframes blink { 50% { opacity: 0; } }
 
-  /* ========== HUD — Operator view ========== */
-  .hud .terminal-body,
-  .terminal.hud > .hud-mission,
-  .terminal.hud > .hud-main,
-  .terminal.hud > .hud-safety { padding: 0; }
+  /* ========== DASHBOARD — Operator view (mimics real product UI) ========== */
+  /* Override terminal defaults inside .hud */
+  .terminal.hud {
+    background: #0a0d0a;
+    border: 1px solid rgba(0, 255, 136, 0.12);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,255,136,0.08), inset 0 0 80px rgba(0, 30, 15, 0.3);
+  }
 
-  .hud-live {
-    margin-left: auto;
-    display: inline-flex;
+  /* ---- Top status bar (mirrors real dashboard) ---- */
+  .dash-topbar {
+    display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 24px;
+    padding: 9px 16px;
+    border-bottom: 1px solid rgba(0,255,136,0.1);
+    background: rgba(0,0,0,0.3);
     font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--green);
-    padding: 3px 8px;
-    border: 1px solid var(--green-dim);
-    border-radius: 2px;
-    background: rgba(0,255,136,0.06);
-  }
-  .hud-live-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 6px var(--green);
-    animation: hudPulse 1.6s ease-in-out infinite;
-  }
-  @keyframes hudPulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.7); }
-  }
-
-  /* Label / value typography */
-  .hud-label {
-    font-family: var(--mono);
-    font-size: 9px;
-    letter-spacing: 0.2em;
+    font-size: 10px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--text-muted);
   }
-  .hud-muted {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 0.05em;
+  .dash-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
   }
-  .hud-value {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--text);
-  }
-  .hud-value-strong {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--text);
-    font-weight: 700;
-  }
-  .hud-value-green {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--green);
-  }
-  .hud-unit {
-    color: var(--text-muted);
-    font-size: 9px;
-    margin-left: 2px;
-  }
-
-  /* Mission progress bar */
-  .hud-mission {
-    padding: 14px 16px 12px !important;
-    border-bottom: 1px solid var(--border);
-  }
-  .hud-mission-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 10px;
-    gap: 16px;
-  }
-  .hud-mission-name {
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text);
-    margin-top: 4px;
-    letter-spacing: 0.02em;
-  }
-  .hud-mission-progress-meta {
-    font-family: var(--mono);
-    text-align: right;
-    white-space: nowrap;
-  }
-  .hud-progress {
-    height: 3px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 2px;
-    overflow: hidden;
+  .dash-pill .pk { color: var(--text-muted); }
+  .dash-pill .pv { color: var(--green); }
+  .dash-bat-bar {
+    display: inline-block;
+    width: 56px;
+    height: 6px;
+    border: 1px solid rgba(0,255,136,0.4);
+    border-radius: 1px;
     position: relative;
+    margin-right: 6px;
   }
-  .hud-progress-fill {
-    height: 100%;
-    width: 42%;
-    background: linear-gradient(90deg, rgba(0,255,136,0.4), var(--green));
-    box-shadow: 0 0 8px var(--green-dim);
-    position: relative;
-  }
-  .hud-progress-fill::after {
+  .dash-bat-bar::after {
     content: '';
     position: absolute;
-    right: -1px; top: -2px;
-    width: 2px; height: 7px;
+    top: 0; left: 0; bottom: 0;
+    width: 96%;
     background: var(--green);
-    box-shadow: 0 0 8px var(--green);
+    box-shadow: 0 0 6px var(--green);
+  }
+  .dash-time {
+    margin-left: auto;
+    color: var(--green);
+    letter-spacing: 0.15em;
   }
 
-  /* Main HUD layout */
-  .hud-main {
+  /* ---- Main split: map + right panel ---- */
+  .dash-main {
     display: grid;
-    grid-template-columns: 1fr 160px;
-    border-bottom: 1px solid var(--border);
+    grid-template-columns: 1.55fr 1fr;
+    min-height: 380px;
   }
 
-  /* Map */
-  .hud-map {
+  /* ---- LEFT: map ---- */
+  .dash-map {
     position: relative;
-    background: #0a0e10;
-    border-right: 1px solid var(--border);
-    min-height: 220px;
+    background: #0a1410;
+    border-right: 1px solid rgba(0,255,136,0.08);
     overflow: hidden;
   }
-  .hud-map svg {
+  .dash-map svg {
     display: block;
     width: 100%;
     height: 100%;
+    min-height: 380px;
   }
-  .hud-map-label {
+  .dash-map-tag {
     position: absolute;
-    top: 10px;
+    top: 8px;
+    left: 12px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: rgba(0,255,136,0.7);
+    text-transform: uppercase;
+    z-index: 3;
+  }
+  .dash-map-center {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(0,255,136,0.7);
+    text-transform: uppercase;
+    z-index: 3;
+    cursor: default;
+  }
+  .dash-zoom {
+    position: absolute;
+    top: 32px;
     left: 12px;
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    pointer-events: none;
+    z-index: 3;
   }
-  .hud-map-coords {
+  .dash-zoom button {
+    width: 22px;
+    height: 22px;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(0,255,136,0.25);
+    color: var(--green);
     font-family: var(--mono);
-    font-size: 9px;
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 0.05em;
+    font-size: 13px;
+    line-height: 1;
+    cursor: default;
+    padding: 0;
   }
+  .dash-zoom button + button { border-top: none; }
 
-  /* Map animations */
-  .hud-traj-upcoming {
-    stroke-dashoffset: 0;
-    animation: hudDashFlow 1.8s linear infinite;
-  }
-  @keyframes hudDashFlow {
-    to { stroke-dashoffset: -16; }
-  }
-  .hud-wp-pulse {
-    transform-origin: 165px 145px;
-    animation: hudWpPulse 2.4s ease-in-out infinite;
-  }
-  @keyframes hudWpPulse {
-    0%, 100% { opacity: 0.3; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(1.25); }
-  }
-  .hud-lidar {
-    transform-origin: 165px 145px;
-    animation: hudLidarFade 3s ease-in-out infinite;
-  }
-  @keyframes hudLidarFade {
-    0%, 100% { opacity: 0.55; }
-    50% { opacity: 0.95; }
-  }
-  .hud-sweep {
-    transform-origin: 0 0;
-    animation: hudSweep 3s ease-in-out infinite;
-  }
-  @keyframes hudSweep {
-    0% { transform: rotate(-30deg); opacity: 0.2; }
-    50% { transform: rotate(30deg); opacity: 0.9; }
-    100% { transform: rotate(-30deg); opacity: 0.2; }
-  }
-  .hud-drone {
-    animation: hudDroneHover 3.6s ease-in-out infinite;
-  }
-  @keyframes hudDroneHover {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
-  }
-
-  /* Sidebar */
-  .hud-sidebar {
+  /* ---- RIGHT: panel column ---- */
+  .dash-panel {
+    background: rgba(0,0,0,0.2);
     display: flex;
     flex-direction: column;
-    background: rgba(255,255,255,0.015);
   }
-  .hud-block {
+  .dash-section {
     padding: 12px 14px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(0,255,136,0.07);
   }
-  .hud-block:last-child { border-bottom: none; }
-  .hud-block-head {
+  .dash-section:last-child { border-bottom: none; }
+  .dash-section-title {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
   }
-  .hud-agent {
+  .dash-section-title .title-action {
+    color: rgba(0,255,136,0.5);
+    font-size: 8px;
+  }
+
+  /* Mission planner row */
+  .dash-mission-status {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 4px 0;
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 11px;
+    color: var(--green);
+    margin-bottom: 8px;
   }
-  .hud-agent-name { color: var(--text); flex: 1; }
-  .hud-agent-role {
-    color: var(--text-muted);
-    font-size: 9px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-  .hud-dot {
-    width: 6px; height: 6px;
+  .dash-mission-status .ms-dot {
+    width: 7px; height: 7px;
     border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .hud-dot-green {
     background: var(--green);
     box-shadow: 0 0 6px var(--green);
   }
-  .hud-stat-row {
+  .dash-mission-name {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-soft);
+    line-height: 1.5;
+  }
+
+  /* Two-cell metrics grid */
+  .dash-cells {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+  .dash-cell {
+    padding: 8px 10px;
+    border: 1px solid rgba(0,255,136,0.12);
+    background: rgba(0,0,0,0.3);
+    border-radius: 2px;
+  }
+  .dash-cell-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    color: var(--text-muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .dash-cell-value {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 700;
+  }
+  .dash-cell-value .unit {
+    font-size: 9px;
+    color: rgba(0,255,136,0.5);
+    font-weight: 400;
+    margin-left: 2px;
+  }
+
+  /* GPS coords block */
+  .dash-coords {
+    font-family: var(--mono);
+    font-size: 10px;
+  }
+  .dash-coord-row {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    padding: 3px 0;
+    padding: 2px 0;
   }
-  .hud-cursor {
+  .dash-coord-row .ck { color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: 9px; }
+  .dash-coord-row .cv { color: var(--green); }
+  .dash-coord-fix {
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  /* Event log */
+  .dash-log {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-soft);
+    line-height: 1.6;
+  }
+  .dash-log-line {
+    display: flex;
+    gap: 10px;
+    padding: 1px 0;
+  }
+  .dash-log-time { color: var(--text-muted); flex-shrink: 0; }
+  .dash-log-msg { color: var(--green); opacity: 0.85; }
+  .dash-log-msg.warn { color: var(--amber); }
+
+  /* ---- Animations on map ---- */
+  /* Robot moves along path */
+  .dash-robot {
+    offset-path: path("M 80 280 C 130 260, 170 220, 200 180 S 280 130, 340 110 S 440 130, 480 180");
+    offset-distance: 0%;
+    offset-rotate: auto;
+    animation: dashRobotMove 24s linear infinite;
+  }
+  @keyframes dashRobotMove {
+    0%   { offset-distance: 0%; }
+    100% { offset-distance: 100%; }
+  }
+  /* Drone circles the field perimeter */
+  .dash-drone {
+    offset-path: path("M 60 80 L 500 80 L 500 320 L 60 320 Z");
+    offset-distance: 0%;
+    offset-rotate: 0deg;
+    animation: dashDroneOrbit 18s linear infinite;
+  }
+  @keyframes dashDroneOrbit {
+    0%   { offset-distance: 0%; }
+    100% { offset-distance: 100%; }
+  }
+  /* Drone props spin */
+  .dash-drone-props {
+    transform-origin: center;
+    animation: dashPropSpin 0.4s linear infinite;
+  }
+  @keyframes dashPropSpin {
+    to { transform: rotate(360deg); }
+  }
+  /* Robot pulse halo */
+  .dash-robot-halo {
+    transform-origin: center;
+    animation: dashHalo 2s ease-in-out infinite;
+  }
+  @keyframes dashHalo {
+    0%, 100% { opacity: 0.3; r: 9; }
+    50% { opacity: 0.7; r: 15; }
+  }
+  /* Trail line dashed flow */
+  .dash-trail-future {
+    stroke-dasharray: 4 4;
+    animation: dashTrailFlow 1.6s linear infinite;
+  }
+  @keyframes dashTrailFlow {
+    to { stroke-dashoffset: -16; }
+  }
+  /* Drone scan cone sweeps */
+  .dash-drone-scan {
+    animation: dashScanFade 2.4s ease-in-out infinite;
+    transform-origin: center;
+  }
+  @keyframes dashScanFade {
+    0%, 100% { opacity: 0.15; }
+    50%      { opacity: 0.55; }
+  }
+  /* Uptime cursor */
+  .dash-cursor {
     display: inline-block;
     width: 5px; height: 9px;
     background: var(--green);
     margin-left: 3px;
     vertical-align: middle;
     animation: blink 1s steps(2) infinite;
-  }
-
-  /* Safety footer */
-  .hud-safety {
-    padding: 10px 16px !important;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0,255,136,0.025);
-  }
-  .hud-safety-left, .hud-safety-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .hud-safety-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--green);
   }
 
   /* Hero scroll indicator */
@@ -1411,12 +1441,10 @@
     .arch-iso { max-width: 460px; margin: 0 auto; }
   }
   @media (max-width: 640px) {
-    .hud-main { grid-template-columns: 1fr; }
-    .hud-map { border-right: none; border-bottom: 1px solid var(--border); min-height: 200px; }
-    .hud-sidebar { flex-direction: row; flex-wrap: wrap; }
-    .hud-block { flex: 1 1 50%; border-right: 1px solid var(--border); }
-    .hud-block:nth-child(2n) { border-right: none; }
-    .hud-safety { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .dash-main { grid-template-columns: 1fr; }
+    .dash-map { border-right: none; border-bottom: 1px solid rgba(0,255,136,0.08); min-height: 240px; }
+    .dash-topbar { flex-wrap: wrap; gap: 12px; font-size: 9px; }
+    .dash-time { margin-left: 0; }
   }
   @media (max-width: 768px) {
     .nav { padding: 14px 20px; }
@@ -1487,243 +1515,206 @@
 
     <div class="hero-visual">
       <div class="terminal hud">
-        <div class="terminal-header">
-          <div class="terminal-lights"><span></span><span></span><span></span></div>
-          <div class="terminal-title">terraos · operator view</div>
-          <div class="hud-live"><span class="hud-live-dot"></span>LIVE</div>
+        <!-- Top status bar (mirrors real product UI) -->
+        <div class="dash-topbar">
+          <span class="dash-pill"><span class="pk">MODE</span><span class="pv">STANDBY</span></span>
+          <span class="dash-pill"><span class="pk">SAFETY</span><span class="pv">OK</span></span>
+          <span class="dash-pill"><span class="pk">BAT</span><span class="dash-bat-bar"></span><span class="pv">98%</span></span>
+          <span class="dash-pill"><span class="pv">27 ms</span></span>
+          <span class="dash-time">16:47:48 UTC</span>
         </div>
 
-        <!-- Mission status bar -->
-        <div class="hud-mission">
-          <div class="hud-mission-row">
-            <div>
-              <div class="hud-label">Mission active</div>
-              <div class="hud-mission-name">field_survey_42</div>
-            </div>
-            <div class="hud-mission-progress-meta">
-              <span class="hud-value-strong">03</span>
-              <span class="hud-muted"> / 07 waypoints</span>
-            </div>
-          </div>
-          <div class="hud-progress">
-            <div class="hud-progress-fill"></div>
-          </div>
-        </div>
+        <!-- Main split: map + control panel -->
+        <div class="dash-main">
 
-        <!-- Main HUD: map + sidebar -->
-        <div class="hud-main">
-          <!-- MAP -->
-          <div class="hud-map">
-            <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <!-- LEFT: GPS map with animated robot + drone -->
+          <div class="dash-map">
+            <span class="dash-map-tag">› GPS MAP</span>
+            <span class="dash-map-center">⊕ CENTER</span>
+            <div class="dash-zoom">
+              <button>+</button>
+              <button>−</button>
+            </div>
+
+            <svg viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
               <defs>
-                <!-- Grid pattern -->
-                <pattern id="hudGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(0,255,136,0.05)" stroke-width="0.5"/>
-                </pattern>
-                <pattern id="hudGridMajor" width="80" height="80" patternUnits="userSpaceOnUse">
-                  <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(0,255,136,0.09)" stroke-width="0.6"/>
-                </pattern>
-                <!-- LiDAR scan radial gradient -->
-                <radialGradient id="lidarFan" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stop-color="rgba(0,255,136,0.35)" />
-                  <stop offset="60%" stop-color="rgba(0,255,136,0.10)" />
-                  <stop offset="100%" stop-color="rgba(0,255,136,0)" />
+                <!-- Field texture: organic blobs to suggest tree clusters / crops -->
+                <radialGradient id="treeClump" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="rgba(20,60,30,0.95)"/>
+                  <stop offset="70%" stop-color="rgba(10,40,20,0.7)"/>
+                  <stop offset="100%" stop-color="rgba(8,25,15,0)"/>
                 </radialGradient>
-                <!-- Drone altitude line gradient -->
-                <linearGradient id="droneLine" x1="0" y1="0" x2="0" y2="1">
+                <radialGradient id="droneScan" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="rgba(0,255,136,0.35)"/>
+                  <stop offset="100%" stop-color="rgba(0,255,136,0)"/>
+                </radialGradient>
+                <radialGradient id="robotHaloGrad" cx="50%" cy="50%" r="50%">
                   <stop offset="0%" stop-color="rgba(0,255,136,0.6)"/>
-                  <stop offset="100%" stop-color="rgba(0,255,136,0.05)"/>
-                </linearGradient>
+                  <stop offset="100%" stop-color="rgba(0,255,136,0)"/>
+                </radialGradient>
               </defs>
 
-              <!-- Background -->
-              <rect width="400" height="260" fill="#0a0e10"/>
-              <rect width="400" height="260" fill="url(#hudGrid)"/>
-              <rect width="400" height="260" fill="url(#hudGridMajor)"/>
+              <!-- Base dark soil -->
+              <rect width="560" height="400" fill="#0a1410"/>
 
-              <!-- Faint field boundary polygon (suggests outdoor terrain) -->
-              <path d="M 30 220 L 50 60 L 200 30 L 350 50 L 380 200 L 320 240 L 80 240 Z"
-                    fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="3 4"/>
-
-              <!-- Compass rose (top-right) -->
-              <g transform="translate(360,30)" opacity="0.55">
-                <circle cx="0" cy="0" r="14" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="0.6"/>
-                <line x1="0" y1="-14" x2="0" y2="-9" stroke="#00ff88" stroke-width="1.2"/>
-                <text x="0" y="-17" fill="rgba(255,255,255,0.55)" font-family="Space Mono" font-size="7" text-anchor="middle" letter-spacing="0.5">N</text>
+              <!-- Crop rows (very faint vertical stripes for field texture) -->
+              <g opacity="0.18">
+                <line x1="20"  y1="0" x2="20"  y2="400" stroke="#1e3a24" stroke-width="6"/>
+                <line x1="50"  y1="0" x2="50"  y2="400" stroke="#1e3a24" stroke-width="4"/>
+                <line x1="90"  y1="0" x2="90"  y2="400" stroke="#1e3a24" stroke-width="5"/>
+                <line x1="540" y1="0" x2="540" y2="400" stroke="#1e3a24" stroke-width="6"/>
+                <line x1="510" y1="0" x2="510" y2="400" stroke="#1e3a24" stroke-width="4"/>
               </g>
 
-              <!-- Scale bar (bottom-left) -->
-              <g transform="translate(20,240)" opacity="0.55">
-                <line x1="0" y1="0" x2="40" y2="0" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
-                <line x1="0" y1="-3" x2="0" y2="3" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
-                <line x1="40" y1="-3" x2="40" y2="3" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
-                <text x="20" y="12" fill="rgba(255,255,255,0.5)" font-family="Space Mono" font-size="7" text-anchor="middle" letter-spacing="0.5">10 m</text>
+              <!-- Tree / vegetation clumps (organic) -->
+              <ellipse cx="120" cy="60"  rx="70" ry="48" fill="url(#treeClump)"/>
+              <ellipse cx="80"  cy="180" rx="85" ry="65" fill="url(#treeClump)"/>
+              <ellipse cx="180" cy="260" rx="60" ry="50" fill="url(#treeClump)"/>
+              <ellipse cx="130" cy="350" rx="80" ry="50" fill="url(#treeClump)"/>
+              <ellipse cx="380" cy="60"  rx="70" ry="45" fill="url(#treeClump)"/>
+              <ellipse cx="470" cy="170" rx="65" ry="55" fill="url(#treeClump)"/>
+              <ellipse cx="410" cy="310" rx="75" ry="55" fill="url(#treeClump)"/>
+              <ellipse cx="280" cy="360" rx="60" ry="40" fill="url(#treeClump)"/>
+
+              <!-- Dirt path through middle -->
+              <path d="M 240 0 Q 260 80, 250 180 T 280 400"
+                    fill="none" stroke="#3a3020" stroke-width="22" opacity="0.55" stroke-linecap="round"/>
+              <path d="M 240 0 Q 260 80, 250 180 T 280 400"
+                    fill="none" stroke="#4a3a26" stroke-width="14" opacity="0.65" stroke-linecap="round"/>
+
+              <!-- ===== Mission trajectory ===== -->
+              <!-- Past (covered) trail -->
+              <path id="trail-past"
+                    d="M 80 280 C 130 260, 170 220, 200 180 S 280 130, 340 110 S 440 130, 480 180"
+                    fill="none" stroke="rgba(0,255,136,0.85)" stroke-width="1.8" stroke-linecap="round"/>
+              <!-- Future planned -->
+              <path class="dash-trail-future"
+                    d="M 480 180 C 510 230, 500 290, 460 320 S 350 340, 280 320"
+                    fill="none" stroke="rgba(0,255,136,0.45)" stroke-width="1.4" stroke-linecap="round"/>
+
+              <!-- Drone scanning perimeter rectangle (very faint) -->
+              <rect x="60" y="80" width="440" height="240" fill="none"
+                    stroke="rgba(0,255,136,0.18)" stroke-width="0.8" stroke-dasharray="3 5"/>
+              <text x="62" y="76" fill="rgba(0,255,136,0.5)" font-family="Space Mono" font-size="8" letter-spacing="0.15em">DRONE-01 · PERIMETER SCAN</text>
+
+              <!-- Waypoints (mission markers) -->
+              <g opacity="0.7">
+                <circle cx="200" cy="180" r="3" fill="none" stroke="rgba(0,255,136,0.6)" stroke-width="1"/>
+                <circle cx="340" cy="110" r="3" fill="none" stroke="rgba(0,255,136,0.6)" stroke-width="1"/>
+                <circle cx="480" cy="180" r="3" fill="none" stroke="rgba(0,255,136,0.6)" stroke-width="1"/>
+                <circle cx="460" cy="320" r="3" fill="none" stroke="rgba(0,255,136,0.6)" stroke-width="1"/>
+                <circle cx="280" cy="320" r="3" fill="none" stroke="rgba(0,255,136,0.6)" stroke-width="1"/>
               </g>
 
-              <!-- Planned trajectory (completed segments solid, upcoming dashed) -->
-              <!-- Completed: WP1 → WP2 → WP3 -->
-              <path d="M 60 200 L 110 165 L 165 145"
-                    fill="none" stroke="#00ff88" stroke-width="1.6" stroke-linecap="round" opacity="0.85"/>
-              <!-- Upcoming: WP3 → WP4 → WP5 → WP6 → WP7 -->
-              <path d="M 165 145 L 225 120 L 280 100 L 325 115 L 355 155"
-                    fill="none" stroke="rgba(0,255,136,0.55)" stroke-width="1.4" stroke-linecap="round"
-                    stroke-dasharray="4 4" class="hud-traj-upcoming"/>
+              <!-- Scale bar -->
+              <g transform="translate(440 374)" opacity="0.6">
+                <line x1="0" y1="0" x2="60" y2="0" stroke="rgba(0,255,136,0.5)" stroke-width="0.8"/>
+                <line x1="0" y1="-3" x2="0" y2="3" stroke="rgba(0,255,136,0.5)" stroke-width="0.8"/>
+                <line x1="60" y1="-3" x2="60" y2="3" stroke="rgba(0,255,136,0.5)" stroke-width="0.8"/>
+                <text x="30" y="14" fill="rgba(0,255,136,0.6)" font-family="Space Mono" font-size="8" text-anchor="middle" letter-spacing="0.1em">20 m</text>
+              </g>
 
-              <!-- Drone aerial position (above WP5, scanning ahead) -->
-              <g class="hud-drone">
-                <!-- altitude line down to ground -->
-                <line x1="280" y1="55" x2="280" y2="100" stroke="url(#droneLine)" stroke-width="1" stroke-dasharray="2 3"/>
-                <!-- ground projection marker -->
-                <circle cx="280" cy="100" r="3" fill="none" stroke="rgba(0,255,136,0.4)" stroke-width="0.8"/>
-                <!-- drone icon -->
-                <g transform="translate(280,55)">
-                  <line x1="-8" y1="0" x2="8" y2="0" stroke="#00ff88" stroke-width="1.2"/>
-                  <line x1="0" y1="-8" x2="0" y2="8" stroke="#00ff88" stroke-width="1.2"/>
-                  <circle cx="-8" cy="0" r="2.5" fill="#0a0e10" stroke="#00ff88" stroke-width="1"/>
-                  <circle cx="8" cy="0" r="2.5" fill="#0a0e10" stroke="#00ff88" stroke-width="1"/>
-                  <circle cx="0" cy="-8" r="2.5" fill="#0a0e10" stroke="#00ff88" stroke-width="1"/>
-                  <circle cx="0" cy="8" r="2.5" fill="#0a0e10" stroke="#00ff88" stroke-width="1"/>
-                  <circle cx="0" cy="0" r="1.5" fill="#00ff88"/>
+              <!-- Compass -->
+              <g transform="translate(520 50)" opacity="0.6">
+                <circle r="11" fill="none" stroke="rgba(0,255,136,0.4)" stroke-width="0.6"/>
+                <line x1="0" y1="-11" x2="0" y2="-6" stroke="var(--green)" stroke-width="1.2"/>
+                <text y="-14" fill="rgba(0,255,136,0.7)" font-family="Space Mono" font-size="7" text-anchor="middle">N</text>
+              </g>
+
+              <!-- ===== DRONE (animated, orbits the perimeter) ===== -->
+              <g class="dash-drone">
+                <!-- Faint scan cone below drone -->
+                <circle r="28" fill="url(#droneScan)" class="dash-drone-scan"/>
+                <!-- Drone shadow -->
+                <ellipse cy="3" rx="6" ry="1.5" fill="rgba(0,0,0,0.4)"/>
+                <!-- Drone body (X frame) -->
+                <g class="dash-drone-props">
+                  <line x1="-7" y1="-7" x2="7" y2="7" stroke="rgba(0,255,136,0.75)" stroke-width="1.4"/>
+                  <line x1="-7" y1="7" x2="7" y2="-7" stroke="rgba(0,255,136,0.75)" stroke-width="1.4"/>
+                  <circle cx="-7" cy="-7" r="2.2" fill="#0a1410" stroke="var(--green)" stroke-width="1"/>
+                  <circle cx="7"  cy="-7" r="2.2" fill="#0a1410" stroke="var(--green)" stroke-width="1"/>
+                  <circle cx="-7" cy="7"  r="2.2" fill="#0a1410" stroke="var(--green)" stroke-width="1"/>
+                  <circle cx="7"  cy="7"  r="2.2" fill="#0a1410" stroke="var(--green)" stroke-width="1"/>
                 </g>
-                <text x="295" y="50" fill="rgba(0,255,136,0.85)" font-family="Space Mono" font-size="8" letter-spacing="0.5">DRONE-01</text>
+                <!-- Center hub -->
+                <circle r="2" fill="var(--green)"/>
+                <!-- Label -->
+                <text x="12" y="3" fill="rgba(0,255,136,0.85)" font-family="Space Mono" font-size="7" letter-spacing="0.1em">DRONE-01</text>
               </g>
 
-              <!-- Waypoints -->
-              <!-- WP1 — completed -->
-              <g>
-                <circle cx="60" cy="200" r="5" fill="#0a0e10" stroke="rgba(0,255,136,0.5)" stroke-width="1.2"/>
-                <circle cx="60" cy="200" r="2" fill="rgba(0,255,136,0.6)"/>
-                <text x="60" y="218" fill="rgba(255,255,255,0.5)" font-family="Space Mono" font-size="7" text-anchor="middle">WP01</text>
+              <!-- ===== ROBOT (animated, follows trail) ===== -->
+              <g class="dash-robot">
+                <!-- Pulsing halo around robot -->
+                <circle class="dash-robot-halo" r="10" fill="url(#robotHaloGrad)"/>
+                <!-- Robot icon: small chevron + body, oriented along path -->
+                <rect x="-5" y="-4" width="10" height="8" rx="1" fill="var(--green)" stroke="#001a0d" stroke-width="0.5"/>
+                <path d="M 5 -3 L 9 0 L 5 3 Z" fill="var(--green)"/>
+                <!-- Tracks -->
+                <rect x="-5" y="-5.5" width="10" height="1.2" fill="#003318"/>
+                <rect x="-5" y="4.3" width="10" height="1.2" fill="#003318"/>
+                <!-- Label (counter-rotated so it stays readable... tricky, we'll just place near) -->
+                <text x="8" y="-8" fill="var(--green)" font-family="Space Mono" font-size="7" letter-spacing="0.1em">UGV-01</text>
               </g>
-              <!-- WP2 — completed -->
-              <g>
-                <circle cx="110" cy="165" r="5" fill="#0a0e10" stroke="rgba(0,255,136,0.5)" stroke-width="1.2"/>
-                <circle cx="110" cy="165" r="2" fill="rgba(0,255,136,0.6)"/>
-                <text x="110" y="183" fill="rgba(255,255,255,0.5)" font-family="Space Mono" font-size="7" text-anchor="middle">WP02</text>
-              </g>
-              <!-- WP3 — CURRENT (robot here) -->
-              <g class="hud-wp-current">
-                <circle cx="165" cy="145" r="11" fill="none" stroke="rgba(0,255,136,0.3)" stroke-width="1" class="hud-wp-pulse"/>
-                <circle cx="165" cy="145" r="7" fill="#0a0e10" stroke="#00ff88" stroke-width="1.5"/>
-                <text x="165" y="121" fill="#00ff88" font-family="Space Mono" font-size="7" text-anchor="middle" letter-spacing="0.5">WP03 · CURRENT</text>
-              </g>
-              <!-- WP4 — upcoming -->
-              <g>
-                <circle cx="225" cy="120" r="4" fill="#0a0e10" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
-                <text x="225" y="108" fill="rgba(255,255,255,0.4)" font-family="Space Mono" font-size="7" text-anchor="middle">WP04</text>
-              </g>
-              <!-- WP5 — upcoming -->
-              <g>
-                <circle cx="280" cy="100" r="4" fill="#0a0e10" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
-                <text x="280" y="118" fill="rgba(255,255,255,0.4)" font-family="Space Mono" font-size="7" text-anchor="middle">WP05</text>
-              </g>
-              <!-- WP6 — upcoming -->
-              <g>
-                <circle cx="325" cy="115" r="4" fill="#0a0e10" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
-                <text x="325" y="105" fill="rgba(255,255,255,0.4)" font-family="Space Mono" font-size="7" text-anchor="middle">WP06</text>
-              </g>
-              <!-- WP7 — upcoming (final) -->
-              <g>
-                <circle cx="355" cy="155" r="4" fill="#0a0e10" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
-                <text x="355" y="173" fill="rgba(255,255,255,0.4)" font-family="Space Mono" font-size="7" text-anchor="middle">WP07</text>
-              </g>
-
-              <!-- LiDAR scan fan (semi-circle in heading direction) — robot at (165,145), facing NE toward WP4 -->
-              <g transform="translate(165 145) rotate(-25)" class="hud-lidar">
-                <path d="M 0 0 L 50 -28 A 58 58 0 0 1 50 28 Z" fill="url(#lidarFan)" opacity="0.85"/>
-                <!-- scan sweep line -->
-                <line x1="0" y1="0" x2="58" y2="0" stroke="rgba(0,255,136,0.55)" stroke-width="0.6" class="hud-sweep"/>
-              </g>
-
-              <!-- Robot (UGV) — heading triangle, rotated toward WP4 -->
-              <g transform="translate(165 145) rotate(-25)" class="hud-robot">
-                <!-- chassis -->
-                <rect x="-7" y="-5" width="14" height="10" rx="1.5" fill="#00ff88" stroke="#0a0e10" stroke-width="0.6"/>
-                <!-- heading indicator (forward arrow tip) -->
-                <path d="M 7 -3 L 12 0 L 7 3 Z" fill="#00ff88"/>
-                <!-- tracks -->
-                <rect x="-7" y="-7" width="14" height="1.5" fill="#003318"/>
-                <rect x="-7" y="5.5" width="14" height="1.5" fill="#003318"/>
-              </g>
-              <!-- robot label -->
-              <text x="180" y="160" fill="#00ff88" font-family="Space Mono" font-size="8" letter-spacing="0.5">UGV-01</text>
             </svg>
-
-            <!-- Map overlay label -->
-            <div class="hud-map-label">
-              <span class="hud-label">Top-down view</span>
-              <span class="hud-map-coords">48.85°N · 2.35°E</span>
-            </div>
           </div>
 
-          <!-- SIDEBAR -->
-          <div class="hud-sidebar">
-            <!-- Agents -->
-            <div class="hud-block">
-              <div class="hud-block-head">
-                <span class="hud-label">Agents</span>
-                <span class="hud-value-strong">02 / 02</span>
+          <!-- RIGHT: control panel -->
+          <div class="dash-panel">
+
+            <!-- Mission planner -->
+            <div class="dash-section">
+              <div class="dash-section-title">
+                <span>Mission Planner</span>
+                <span class="title-action">⚙</span>
               </div>
-              <div class="hud-agent">
-                <span class="hud-dot hud-dot-green"></span>
-                <span class="hud-agent-name">UGV-01</span>
-                <span class="hud-agent-role">ground</span>
+              <div class="dash-mission-status">
+                <span class="ms-dot"></span>
+                <span>RUNNING</span>
               </div>
-              <div class="hud-agent">
-                <span class="hud-dot hud-dot-green"></span>
-                <span class="hud-agent-name">DRONE-01</span>
-                <span class="hud-agent-role">air</span>
+              <div class="dash-mission-name">field_survey_42<br/>multi-agent · ugv + drone</div>
+            </div>
+
+            <!-- Metrics cells -->
+            <div class="dash-section">
+              <div class="dash-cells">
+                <div class="dash-cell">
+                  <div class="dash-cell-label">Speed</div>
+                  <div class="dash-cell-value">1.4<span class="unit">m/s</span></div>
+                </div>
+                <div class="dash-cell">
+                  <div class="dash-cell-label">Uptime</div>
+                  <div class="dash-cell-value">00:24:17<span class="dash-cursor"></span></div>
+                </div>
               </div>
             </div>
 
-            <!-- Localization -->
-            <div class="hud-block">
-              <div class="hud-block-head">
-                <span class="hud-label">Localization</span>
+            <!-- GPS block -->
+            <div class="dash-section">
+              <div class="dash-section-title">
+                <span>GPS</span>
+                <span class="dash-coord-fix">● FIX</span>
               </div>
-              <div class="hud-stat-row">
-                <span class="hud-muted">source</span>
-                <span class="hud-value">GPS + sensor fusion</span>
-              </div>
-              <div class="hud-stat-row">
-                <span class="hud-muted">status</span>
-                <span class="hud-value-green">converged</span>
+              <div class="dash-coords">
+                <div class="dash-coord-row"><span class="ck">LAT</span><span class="cv">44.4000526</span></div>
+                <div class="dash-coord-row"><span class="ck">LON</span><span class="cv">3.1999626</span></div>
+                <div class="dash-coord-row"><span class="ck">ALT</span><span class="cv">1.4 m</span></div>
               </div>
             </div>
 
-            <!-- Telemetry -->
-            <div class="hud-block">
-              <div class="hud-block-head">
-                <span class="hud-label">Telemetry</span>
+            <!-- Event log -->
+            <div class="dash-section">
+              <div class="dash-section-title">
+                <span>Event Log</span>
+                <span class="title-action">CLEAR</span>
               </div>
-              <div class="hud-stat-row">
-                <span class="hud-muted">speed</span>
-                <span class="hud-value">1.4 <span class="hud-unit">m/s</span></span>
-              </div>
-              <div class="hud-stat-row">
-                <span class="hud-muted">heading</span>
-                <span class="hud-value">087°</span>
-              </div>
-              <div class="hud-stat-row">
-                <span class="hud-muted">uptime</span>
-                <span class="hud-value">00:24:17<span class="hud-cursor"></span></span>
+              <div class="dash-log">
+                <div class="dash-log-line"><span class="dash-log-time">16:46:31</span><span class="dash-log-msg">✓ ROS bridge connected</span></div>
+                <div class="dash-log-line"><span class="dash-log-time">16:46:48</span><span class="dash-log-msg">✓ GPS lock acquired</span></div>
+                <div class="dash-log-line"><span class="dash-log-time">16:47:02</span><span class="dash-log-msg">✓ Mission armed</span></div>
+                <div class="dash-log-line"><span class="dash-log-time">16:47:48</span><span class="dash-log-msg">↗ Drone takeoff confirmed</span></div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- Safety footer -->
-        <div class="hud-safety">
-          <div class="hud-safety-left">
-            <span class="hud-label">Safety monitor</span>
-            <span class="hud-safety-status">
-              <span class="hud-dot hud-dot-green"></span>
-              all clear
-            </span>
-          </div>
-          <div class="hud-safety-right">
-            <span class="hud-muted">3D map</span>
-            <span class="hud-value-green">streaming · 12 hz</span>
           </div>
         </div>
       </div>
